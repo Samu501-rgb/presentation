@@ -1,0 +1,27 @@
+---
+/** Sezione marquee della home: le leve del negozio in due righe opposte. */
+import Marquee from '../../components/Marquee.astro';
+import { negozio } from '../../data/negozio';
+
+const righe = [
+  ['Tutto per la casa', 'Prezzi accessibili', 'Sotto casa a Latina Est', 'Prenoti su WhatsApp'],
+  [
+    'Ritiri in negozio',
+    'Te lo troviamo',
+    `Parcheggio: ${negozio.parcheggio}`,
+    'Spendi poco, trovi tanto',
+  ],
+];
+---
+
+<Marquee righe={righe} />
+
+<script>
+  import { registra } from '../../scripts/motion/setup';
+  registra({
+    nome: 'marquee',
+    carica: () => import('../../scripts/motion/marquee'),
+    quando: 'vicino',
+    el: '[data-marquee]',
+  });
+</script>

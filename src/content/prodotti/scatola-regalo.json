@@ -1,0 +1,12 @@
+{
+  "nome": "Scatola regalo",
+  "reparto": "piccoli-regali-e-decorazione",
+  "descrizione": "Per incartare un pensiero.",
+  "colore": "rosso",
+  "illustrazione": "regalo",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

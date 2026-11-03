@@ -1,0 +1,84 @@
+---
+/**
+ * Cookie policy. Il sito usa SOLO strumenti tecnici: nessun banner necessario.
+ * Se in futuro si aggiungono tracker non tecnici, serve un banner conforme alle
+ * linee guida del Garante del 10/06/2021 (vedi README).
+ */
+import Legale from '../layouts/Legale.astro';
+---
+
+<Legale
+  titolo="Cookie policy – Gino Casa"
+  h1="Cookie policy"
+  descrizione="Il sito di Gino Casa usa solo strumenti tecnici: nessun cookie di profilazione, nessuna statistica di terze parti."
+  percorso="/cookie-policy"
+>
+  <p>
+    Il sito di Gino Casa{' '}
+    <strong>non usa cookie di profilazione né strumenti di statistica o tracciamento</strong>. Per
+    questo non ti chiediamo il consenso con un banner: usiamo solo strumenti tecnici, necessari a
+    far funzionare le funzioni che scegli di usare (art. 122 del Codice privacy e linee guida del
+    Garante del 10 giugno 2021).
+  </p>
+
+  <h2>Dati salvati nel tuo browser</h2>
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse text-left text-base">
+      <caption class="visualmente-nascosto">Strumenti tecnici usati dal sito</caption>
+      <thead>
+        <tr class="border-b-2 border-inchiostro">
+          <th scope="col" class="py-2 pr-4">
+            Nome
+          </th>
+          <th scope="col" class="py-2 pr-4">
+            Tipo
+          </th>
+          <th scope="col" class="py-2 pr-4">
+            A cosa serve
+          </th>
+          <th scope="col" class="py-2">
+            Durata
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-inchiostro/20">
+          <td class="py-2 pr-4 font-semibold">gc-lista</td>
+          <td class="py-2 pr-4">localStorage</td>
+          <td class="py-2 pr-4">Ricorda i prodotti che aggiungi a “La mia lista”.</td>
+          <td class="py-2">Finché non svuoti la lista o i dati del browser</td>
+        </tr>
+        <tr class="border-b border-inchiostro/20">
+          <td class="py-2 pr-4 font-semibold">gc-motion</td>
+          <td class="py-2 pr-4">localStorage</td>
+          <td class="py-2 pr-4">Ricorda se hai scelto “Animazioni on” oppure “off”.</td>
+          <td class="py-2">Finché non cancelli i dati del browser</td>
+        </tr>
+        <tr class="border-b border-inchiostro/20">
+          <td class="py-2 pr-4 font-semibold">gc-serranda</td>
+          <td class="py-2 pr-4">sessionStorage</td>
+          <td class="py-2 pr-4">Mostra l’animazione di apertura solo alla prima visita.</td>
+          <td class="py-2">Fino alla chiusura della scheda</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Questi dati restano sul tuo dispositivo e non vengono inviati a noi né a terzi.</p>
+
+  <h2>Contenuti di terze parti</h2>
+  <p>
+    <strong>Google Maps</strong> viene caricato solo se premi “Carica la mappa”: prima del clic
+    nessuna richiesta parte verso Google. Dopo il clic Google può impostare i propri cookie, secondo
+    la sua informativa. In alternativa puoi usare il link “Apri in Google Maps”. Non incorporiamo
+    contenuti di Instagram o Facebook: ci sono solo link.
+  </p>
+  <p>
+    <strong>WhatsApp</strong>: i pulsanti aprono l’app o il sito di WhatsApp solo quando li premi.
+  </p>
+
+  <h2>Come cancellarli</h2>
+  <p>
+    Puoi svuotare “La mia lista” dalla pagina <a href="/te-lo-troviamo#lista">Te lo troviamo</a> o
+    cancellare i dati del sito dalle impostazioni del browser.
+  </p>
+</Legale>

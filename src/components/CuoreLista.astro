@@ -1,0 +1,40 @@
+---
+/**
+ * Cuore "Aggiungi alla mia lista". La logica (localStorage, coriandoli,
+ * contatore nell'header) sta in scripts/lista.ts. Senza JS il pulsante è nascosto.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  slug: string;
+  nome: string;
+  codice?: string;
+  grande?: boolean;
+  class?: string;
+}
+const { slug, nome, codice, grande = false, class: classe } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={[
+    'cuore tocco relative inline-grid place-items-center rounded-full border-2 border-inchiostro bg-carta text-inchiostro transition-colors',
+    grande ? 'h-12 gap-2 px-5 grid-flow-col font-semibold' : 'size-11',
+    classe,
+  ]}
+  data-cuore
+  data-slug={slug}
+  data-nome={nome}
+  data-codice={codice}
+  aria-pressed="false"
+  hidden
+>
+  <Icon name="lucide:heart" class="icona size-5" aria-hidden="true" />
+  {grande ? (
+    <span data-cuore-testo>Aggiungi alla mia lista</span>
+  ) : (
+    <span class="visualmente-nascosto" data-cuore-testo>
+      Aggiungi {nome} alla mia lista
+    </span>
+  )}
+</button>

@@ -1,0 +1,12 @@
+{
+  "nome": "Tazza da colazione",
+  "reparto": "tavola",
+  "descrizione": "La tazza grande per il latte del mattino.",
+  "colore": "rosso",
+  "illustrazione": "tazza",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

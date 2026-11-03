@@ -1,0 +1,12 @@
+{
+  "nome": "Pallina di Natale gialla",
+  "reparto": "stagionali",
+  "descrizione": "La pallina gialla per l'albero.",
+  "colore": "giallo",
+  "illustrazione": "pallina",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

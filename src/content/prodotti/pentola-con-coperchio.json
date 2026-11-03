@@ -1,0 +1,12 @@
+{
+  "nome": "Pentola con coperchio",
+  "reparto": "cucina",
+  "descrizione": "La pentola che usi tutti i giorni, con il suo coperchio.",
+  "colore": "verde",
+  "illustrazione": "pentola",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

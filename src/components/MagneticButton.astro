@@ -1,0 +1,52 @@
+---
+/**
+ * Pulsante a pillola con testo che scorre in verticale (seconda copia aria-hidden)
+ * e attrazione magnetica (solo con mouse: vedi scripts/motion/magnetic.ts).
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  href?: string;
+  testo: string;
+  variante?: 'inchiostro' | 'pomodoro' | 'limone' | 'carta';
+  vuota?: boolean;
+  icona?: string;
+  esterno?: boolean;
+  magnetico?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+  [attr: string]: unknown;
+}
+
+const {
+  href,
+  testo,
+  variante = 'inchiostro',
+  vuota = false,
+  icona,
+  esterno = false,
+  magnetico = true,
+  type = 'button',
+  class: classe,
+  ...resto
+} = Astro.props;
+const classi = [
+  'pillola',
+  variante !== 'inchiostro' && `pillola--${variante}`,
+  vuota && 'pillola--vuota',
+  classe,
+];
+const Tag = href ? 'a' : 'button';
+const attributi = href
+  ? { href, ...(esterno ? { target: '_blank', rel: 'noopener' } : {}) }
+  : { type };
+---
+
+<Tag class:list={classi} data-magnetic={magnetico ? '' : undefined} {...attributi} {...resto}>
+  {icona && <Icon name={icona} class="icona size-5" aria-hidden="true" />}
+  <span class="pillola__testo">
+    <span>{testo}</span>
+    <span aria-hidden="true">{testo}</span>
+  </span>
+  {esterno && <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>}
+</Tag>

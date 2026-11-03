@@ -1,0 +1,195 @@
+---
+/**
+ * /reparti — "Lo scaffale infinito": tutto il catalogo in una pagina.
+ * Desktop: tela trascinabile (Draggable + Inertia, rotella/trackpad), oppure griglia.
+ * Mobile e movimento ridotto: griglia di default. Filtri live con Flip.
+ */
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Filtri from '../../components/Filtri.astro';
+import Oggetto from '../../components/Oggetto.astro';
+import { reparti, prodotti, SFONDI_REPARTO } from '../../data/catalogo';
+import { COLORI_PRODOTTO } from '../../content.config';
+
+const elencoReparti = await reparti();
+const tutti = await prodotti();
+const nomi = new Map(elencoReparti.map((r) => [r.id, r.data.breve ?? r.data.titolo]));
+const colori = COLORI_PRODOTTO.filter((c) => tutti.some((p) => p.data.colore === c));
+const briciole = [
+  { nome: 'Home', href: '/' },
+  { nome: 'Reparti', href: '/reparti' },
+];
+---
+
+<Base
+  titolo="Reparti e catalogo – Gino Casa, bazar e casalinghi a Latina Est"
+  descrizione="Lo scaffale infinito di Gino Casa: cucina, tavola, pulizia, ordine, bagno, tessile, ferramenta e piccoli regali. Scegli online, prenoti su WhatsApp e ritiri a Latina Est."
+  og="reparti"
+  briciole={briciole}
+>
+  <section class="contenitore pb-10 pt-8 md:pb-14" aria-labelledby="scaffale-titolo">
+    <h1 id="scaffale-titolo" class="titolo-1 max-w-[12ch]">
+      Lo scaffale infinito.
+    </h1>
+    <p class="mt-6 max-w-[48ch] text-lg md:text-xl">
+      C’è un po’ di tutto, dalla pentola alla presa multipla. Trascina lo scaffale, filtra per
+      reparto e colore, poi prenota su WhatsApp e ritira in negozio.
+    </p>
+  </section>
+
+  <nav class="contenitore pb-10" aria-labelledby="reparti-elenco-titolo">
+    <h2 id="reparti-elenco-titolo" class="occhiello mb-4">
+      I reparti
+    </h2>
+    <ul class="flex flex-wrap gap-2">
+      {elencoReparti.map((r) => (
+        <li>
+          <a
+            href={`/reparti/${r.id}`}
+            class:list={[
+              'tocco inline-flex items-center gap-2 rounded-full py-1 pl-1 pr-4 font-semibold ring-2 ring-inchiostro transition-transform hover:-translate-y-0.5',
+              SFONDI_REPARTO[r.data.colore].bg,
+              SFONDI_REPARTO[r.data.colore].testo,
+            ]}
+          >
+            <span class="grid size-9 place-items-center rounded-full bg-carta">
+              <Oggetto nome={r.data.oggetti[0]} class="w-7" dimensione={28} />
+            </span>
+            {r.data.titolo}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <div class="relative">
+    <Filtri reparti={elencoReparti} colori={colori} conVista totale={tutti.length} />
+
+    <section
+      class="scaffale relative pb-24 pt-6"
+      aria-labelledby="oggetti-titolo"
+      data-scaffale
+      data-vista="griglia"
+    >
+      <h2 id="oggetti-titolo" class="visualmente-nascosto">
+        Tutti gli oggetti
+      </h2>
+      <div
+        class="scaffale__finestra"
+        data-finestra
+        data-lenis-prevent
+        role="region"
+        aria-label="Scaffale dei prodotti"
+      >
+        <ul class="scaffale__piano" data-piano>
+          {tutti.map((p) => (
+            <li
+              class="scaffale__voce"
+              data-voce
+              data-slug={p.id}
+              data-reparto={p.data.reparto.id}
+              data-colore={p.data.colore}
+              data-offerta={p.data.inOfferta ? '1' : '0'}
+              data-nuovo={p.data.nuovo ? '1' : '0'}
+            >
+              <ProductCard prodotto={p} nomeReparto={nomi.get(p.data.reparto.id)} transizione />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <p
+        class="scaffale__suggerimento contenitore mt-4 hidden text-sm text-grafite"
+        data-suggerimento
+      >
+        Trascina per esplorare, oppure usa la rotella, il trackpad o le frecce della tastiera.
+      </p>
+      <div class="contenitore py-16 text-center" data-vuoto hidden>
+        <p class="titolo-3">Niente sullo scaffale con questi filtri.</p>
+        <p class="mt-3">
+          <a href="/te-lo-troviamo" class="link">
+            Lo cerchi? Te lo troviamo noi.
+          </a>
+        </p>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  /* Griglia classica (default) */
+  .scaffale__piano {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1rem;
+    padding-inline: clamp(1rem, 4vw, 4rem);
+    max-width: 1440px;
+    margin-inline: auto;
+  }
+  @media (min-width: 768px) {
+    .scaffale__piano {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2.5rem 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .scaffale__piano {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  /* Virtualizzazione leggera: le voci fuori schermo non vengono renderizzate. */
+  .scaffale__voce {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 420px;
+  }
+
+  /* Tela trascinabile */
+  .scaffale[data-vista='tela'] .scaffale__finestra {
+    position: relative;
+    height: max(30rem, calc(100svh - 11rem));
+    overflow: hidden;
+    cursor: grab;
+    touch-action: none;
+    background:
+      radial-gradient(circle at 1px 1px, rgb(31 26 23 / 0.18) 1.2px, transparent 0) 0 0 / 28px 28px,
+      var(--color-carta);
+    border-block: 2px solid var(--color-inchiostro);
+  }
+  .scaffale[data-vista='tela'] .scaffale__finestra:active {
+    cursor: grabbing;
+  }
+  .scaffale[data-vista='tela'] .scaffale__piano {
+    position: absolute;
+    left: 0;
+    top: 0;
+    max-width: none;
+    margin: 0;
+    width: calc(var(--colonne, 8) * 19rem);
+    grid-template-columns: repeat(var(--colonne, 8), 16rem);
+    gap: 4rem 3rem;
+    padding: 4rem 5rem 9rem;
+  }
+  .scaffale[data-vista='tela'] .scaffale__voce:nth-child(even) {
+    translate: 0 7rem;
+  }
+  .scaffale[data-vista='tela'] .scaffale__voce:nth-child(3n) {
+    rotate: -2deg;
+  }
+  .scaffale[data-vista='tela'] .scaffale__voce:nth-child(5n + 1) {
+    rotate: 2.5deg;
+  }
+  .scaffale[data-vista='tela'] .scaffale__suggerimento {
+    display: block;
+  }
+</style>
+
+<script>
+  import { collegaFiltri } from '../../scripts/filtri';
+  import { registra } from '../../scripts/motion/setup';
+  collegaFiltri({ scaffale: true });
+  registra({
+    nome: 'scaffale',
+    carica: () => import('../../scripts/motion/scaffale'),
+    quando: 'subito',
+    sempre: true,
+  });
+</script>

@@ -1,0 +1,12 @@
+{
+  "nome": "Lampadina luce calda",
+  "reparto": "ferramenta-ed-elettricita",
+  "descrizione": "Per una luce più calda la sera.",
+  "colore": "rosso",
+  "illustrazione": "lampadina",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

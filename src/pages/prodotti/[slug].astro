@@ -1,0 +1,199 @@
+---
+/**
+ * /prodotti/[slug] — scheda prodotto: galleria, nome, prezzo (o "Chiedi in negozio"),
+ * disponibilità, codice, "Prenota e ritira su WhatsApp" con testo precompilato,
+ * "Aggiungi alla mia lista", prodotti correlati. view-transition-name condiviso
+ * con l'immagine della card.
+ */
+import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Oggetto from '../../components/Oggetto.astro';
+import Foto from '../../components/Foto.astro';
+import Badge from '../../components/Badge.astro';
+import PriceTag from '../../components/PriceTag.astro';
+import CuoreLista from '../../components/CuoreLista.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import MagneticButton from '../../components/MagneticButton.astro';
+import { prodotti, reparti, TINTE } from '../../data/catalogo';
+import { linkWhatsApp, messaggioPrenotazione } from '../../data/negozio';
+
+export async function getStaticPaths() {
+  const tutti = await prodotti();
+  return tutti.map((p) => ({ params: { slug: p.id }, props: { prodotto: p } }));
+}
+
+const { prodotto } = Astro.props;
+const p = prodotto.data;
+const reparto = (await reparti()).find((r) => r.id === p.reparto.id)!;
+const correlati = (await prodotti())
+  .filter((x) => x.data.reparto.id === p.reparto.id && x.id !== prodotto.id)
+  .slice(0, 4);
+const tinta = TINTE[p.colore];
+const sfondo =
+  p.colore === 'giallo' ? 'bg-mare' : p.colore === 'azzurro' ? 'bg-limone' : 'bg-argilla';
+const briciole = [
+  { nome: 'Home', href: '/' },
+  { nome: 'Reparti', href: '/reparti' },
+  { nome: reparto.data.titolo, href: `/reparti/${reparto.id}` },
+  { nome: p.nome, href: `/prodotti/${prodotto.id}` },
+];
+const wa = linkWhatsApp(messaggioPrenotazione(p.nome, p.codice));
+---
+
+<Base
+  titolo={`${p.nome} – ${reparto.data.titolo} a Latina | Gino Casa, bazar a Latina Est`}
+  descrizione={`${p.nome}${p.descrizione ? `: ${p.descrizione}` : ''} Prenota su WhatsApp e ritira da Gino Casa, bazar a Latina Est di fronte alla farmacia.`}
+  og={`prodotto-${prodotto.id}`}
+  briciole={briciole}
+>
+  <article class="contenitore griglia gap-y-10 py-10 md:py-16" aria-labelledby="prodotto-titolo">
+    <!-- Galleria -->
+    <div class="col-span-4 md:col-span-7">
+      <div
+        class:list={[
+          'prodotto__principale card relative grid aspect-square place-items-center overflow-hidden',
+          sfondo,
+        ]}
+        style={`view-transition-name: p-${prodotto.id}`}
+      >
+        {p.immagini[0] ? (
+          <Image
+            src={p.immagini[0].src}
+            alt={p.immagini[0].alt}
+            width={1200}
+            height={1200}
+            loading="eager"
+            fetchpriority="high"
+            class="size-full object-cover"
+          />
+        ) : (
+          <Oggetto
+            nome={p.illustrazione}
+            colore={p.colore}
+            alt={`Illustrazione: ${p.nome}`}
+            class="w-[64%]"
+            dimensione={480}
+          />
+        )}
+        <div class="absolute left-5 top-5 flex gap-2">
+          {p.inOfferta && <Badge tipo="offerta" class="w-20 text-base" />}
+          {p.nuovo && <Badge tipo="nuovo" class="w-20 text-base" />}
+        </div>
+      </div>
+      <ul class="mt-4 grid grid-cols-3 gap-4" aria-label="Altre foto">
+        {p.immagini.length > 1
+          ? p.immagini.slice(1, 4).map((img) => (
+              <li>
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  width={400}
+                  height={400}
+                  class="card aspect-square object-cover"
+                />
+              </li>
+            ))
+          : ['dettaglio', 'in uso', 'dall’alto'].map((v) => (
+              <li>
+                <Foto
+                  alt={`${p.nome}, ${v}`}
+                  segnaposto={`FOTO: ${p.nome.toLowerCase()}, ${v}, 1:1`}
+                  rapporto="1/1"
+                  class="card text-xs"
+                />
+              </li>
+            ))}
+      </ul>
+    </div>
+
+    <!-- Dettagli -->
+    <div class="col-span-4 md:col-span-5 md:sticky md:top-28 md:self-start">
+      <a href={`/reparti/${reparto.id}`} class="occhiello link-anim">
+        {reparto.data.titolo}
+      </a>
+      <h1 id="prodotto-titolo" class="titolo-2 mt-3">
+        {p.nome}
+      </h1>
+      {p.descrizione && <p class="mt-5 text-lg">{p.descrizione}</p>}
+      <PriceTag prezzo={p.prezzo} class="mt-6 text-lg" />
+      <dl class="mt-8 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-base">
+        <dt class="font-semibold">Disponibilità</dt>
+        <dd class="flex items-center gap-2">
+          {p.disponibile ? (
+            <>
+              <Icon name="lucide:check" class="icona size-5 text-bonifica" aria-hidden="true" />
+              Disponibile in negozio
+            </>
+          ) : (
+            <>
+              Al momento esaurito:{' '}
+              <a href="/te-lo-troviamo" class="link">
+                te lo troviamo
+              </a>
+            </>
+          )}
+        </dd>
+        {p.codice && (
+          <>
+            <dt class="font-semibold">Codice</dt>
+            <dd class="tabular">{p.codice}</dd>
+          </>
+        )}
+        <dt class="font-semibold">Colore</dt>
+        <dd class="flex items-center gap-2">
+          <span
+            class="inline-block size-4 rounded-full ring-2 ring-inchiostro"
+            style={`background:${tinta.campione}`}
+            aria-hidden="true"
+          ></span>
+          {tinta.nome}
+        </dd>
+        <dt class="font-semibold">Ritiro</dt>
+        <dd>In negozio a Latina Est, di fronte alla farmacia</dd>
+      </dl>
+      <div class="mt-10 flex flex-wrap items-center gap-3">
+        <MagneticButton
+          href={wa}
+          testo="Prenota e ritira su WhatsApp"
+          variante="pomodoro"
+          icona="lucide:message-circle"
+          esterno
+        />
+        <CuoreLista slug={prodotto.id} nome={p.nome} codice={p.codice} grande />
+      </div>
+      <hr class="scontrino my-10" />
+      <ol class="space-y-3 text-grafite">
+        <li>
+          <strong class="text-inchiostro">1. Scrivici:</strong> il messaggio è già pronto, aggiungi
+          quando passi.
+        </li>
+        <li>
+          <strong class="text-inchiostro">2. Te lo mettiamo da parte:</strong> ti confermiamo con un
+          messaggio.
+        </li>
+        <li>
+          <strong class="text-inchiostro">3. Ritira:</strong> passi in negozio e lo porti a casa.
+        </li>
+      </ol>
+      {p.esempio && (
+        <p class="mt-8 text-sm text-grafite">Prodotto di esempio: catalogo reale in arrivo.</p>
+      )}
+    </div>
+  </article>
+
+  {correlati.length > 0 && (
+    <section class="contenitore py-16 md:py-24" aria-labelledby="correlati-titolo">
+      <h2 id="correlati-titolo" class="titolo-2">
+        Dallo stesso reparto
+      </h2>
+      <ul class="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-4 md:gap-x-6">
+        {correlati.map((c) => (
+          <li>
+            <ProductCard prodotto={c} transizione />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Base>

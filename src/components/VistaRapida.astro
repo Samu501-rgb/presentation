@@ -1,0 +1,68 @@
+---
+/**
+ * Anteprima veloce (quick view) dentro la pagina reparto: modale accessibile
+ * (<dialog> nativo: focus intrappolato, Esc, aria-modal, ritorno del focus).
+ * L'immagine della card vola nella modale con GSAP Flip (scripts/vista-rapida.ts).
+ */
+import { Icon } from 'astro-icon/components';
+---
+
+<dialog
+  class="vista-rapida card m-auto w-[min(92vw,56rem)] bg-carta p-0 text-inchiostro"
+  aria-labelledby="vr-titolo"
+  data-vr
+  data-lenis-prevent
+>
+  <div class="grid md:grid-cols-2">
+    <div
+      class="vr-immagine grid aspect-square place-items-center bg-limone"
+      data-vr-immagine
+      data-flip-id="vr"
+    ></div>
+    <div class="flex flex-col p-6 md:p-10">
+      <p class="occhiello" data-vr-reparto></p>
+      <h2 id="vr-titolo" class="titolo-3 mt-2" data-vr-nome></h2>
+      <p class="mt-4 font-semibold tabular" data-vr-prezzo></p>
+      <p class="mt-2 text-grafite">Prenoti con un messaggio, ritiri quando passi.</p>
+      <div class="mt-auto flex flex-wrap gap-3 pt-8">
+        <a class="pillola pillola--pomodoro" data-vr-wa target="_blank" rel="noopener">
+          <Icon name="lucide:message-circle" class="icona size-5" aria-hidden="true" />
+          <span>Prenota su WhatsApp</span>
+          <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+        </a>
+        <a class="pillola pillola--vuota" data-vr-scheda>
+          Vedi la scheda
+        </a>
+      </div>
+    </div>
+  </div>
+  <button
+    type="button"
+    class="tocco absolute right-3 top-3 grid size-11 place-items-center rounded-full bg-inchiostro text-carta"
+    data-vr-chiudi
+  >
+    <Icon name="lucide:x" class="icona size-5" aria-hidden="true" />
+    <span class="visualmente-nascosto">Chiudi l’anteprima</span>
+  </button>
+</dialog>
+
+<style>
+  .vista-rapida::backdrop {
+    background: rgb(31 26 23 / 0.6);
+    backdrop-filter: blur(4px);
+  }
+  .vista-rapida {
+    position: fixed;
+    max-height: 92svh;
+    overflow: auto;
+  }
+  .vr-immagine :global(svg) {
+    width: 62%;
+    height: auto;
+  }
+</style>
+
+<script>
+  import { collegaVistaRapida } from '../scripts/vista-rapida';
+  collegaVistaRapida();
+</script>

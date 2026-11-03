@@ -1,0 +1,75 @@
+---
+/**
+ * Offerte del mese: 3–6 card dalla collection "offerte".
+ * Si nasconde da sola se non ci sono offerte valide (alla build e, per sicurezza,
+ * anche lato client in base alla data). Animazioni in scripts/motion/offerte.ts.
+ */
+import SectionHeading from '../../components/SectionHeading.astro';
+import OffertaCard from '../../components/OffertaCard.astro';
+import { offerteValide, dataLeggibile, giorniRimasti, fineValidità } from '../../data/catalogo';
+
+const [offerta] = await offerteValide();
+const articoli = offerta?.data.articoli.slice(0, 6) ?? [];
+const giorni = offerta ? giorniRimasti(offerta.data.validaFino) : 0;
+---
+
+{offerta && articoli.length > 0 && (
+  <section
+    class="offerte bg-limone py-24 md:py-32"
+    aria-labelledby="offerte-titolo"
+    data-offerte
+    data-scadenza={fineValidità(offerta.data.validaFino).toISOString()}
+  >
+    <div class="contenitore">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <SectionHeading
+          occhiello="Offerte"
+          titolo={offerta.data.titolo}
+          id="offerte-titolo"
+          class="!mb-0"
+        >
+          <p>
+            Valide fino al <strong>{dataLeggibile(offerta.data.validaFino)}</strong>.{' '}
+            <span
+              data-giorni-rimasti
+              data-fino={fineValidità(offerta.data.validaFino).toISOString()}
+            >
+              {giorni === 1 ? 'Ancora 1 giorno.' : `Ancora ${giorni} giorni.`}
+            </span>
+          </p>
+        </SectionHeading>
+        <a href="/offerte" class="pillola">
+          Sfoglia il volantino
+        </a>
+      </div>
+      <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {articoli.map((a) => (
+          <OffertaCard
+            nome={a.nome}
+            illustrazione={a.illustrazione}
+            colore={a.colore}
+            prezzo={a.prezzo}
+            prezzoPrima={a.prezzoPrima}
+            nota={a.nota}
+            href={a.prodotto ? `/prodotti/${a.prodotto.id}` : undefined}
+          />
+        ))}
+      </ul>
+      {offerta.data.esempio && (
+        <p class="mt-8 text-sm">Offerte di esempio: i prezzi reali vanno confermati dal negozio.</p>
+      )}
+    </div>
+  </section>
+)}
+
+<script>
+  import { aggiornaScadenze } from '../../scripts/scadenze';
+  import { registra } from '../../scripts/motion/setup';
+  aggiornaScadenze();
+  registra({
+    nome: 'offerte',
+    carica: () => import('../../scripts/motion/offerte'),
+    quando: 'vicino',
+    el: '[data-offerte]',
+  });
+</script>

@@ -1,0 +1,12 @@
+{
+  "nome": "Spugne colorate",
+  "reparto": "pulizia-e-detersivi",
+  "descrizione": "Spugne in più colori: una per ogni stanza.",
+  "colore": "azzurro",
+  "illustrazione": "spugna",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

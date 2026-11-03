@@ -1,0 +1,12 @@
+{
+  "nome": "Pallina di Natale rossa",
+  "reparto": "stagionali",
+  "descrizione": "La pallina rossa per l'albero.",
+  "colore": "rosso",
+  "illustrazione": "pallina",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": true,
+  "inOfferta": false,
+  "esempio": true
+}

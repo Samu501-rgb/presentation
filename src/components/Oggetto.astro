@@ -1,0 +1,46 @@
+---
+/**
+ * Oggetto illustrato dallo sprite /oggetti.svg (segnaposto piatto in palette).
+ * Senza `alt` è decorativo (aria-hidden). Con `alt` è un'immagine con nome accessibile.
+ */
+import type { NomeOggetto } from '../data/oggetti';
+import { TINTE } from '../data/catalogo';
+
+interface Props {
+  nome: NomeOggetto;
+  /** Colore prodotto (rosso, giallo…) oppure tinte esplicite. */
+  colore?: string;
+  t1?: string;
+  t2?: string;
+  alt?: string;
+  class?: string;
+  style?: string;
+  dimensione?: number;
+  [attr: `data-${string}`]: unknown;
+}
+
+const { nome, colore, t1, t2, alt, class: classe, style, dimensione = 200, ...resto } = Astro.props;
+const tinta = colore ? TINTE[colore] : undefined;
+const stile = [
+  (t1 ?? tinta?.t1) && `--t1:${t1 ?? tinta?.t1}`,
+  (t2 ?? tinta?.t2) && `--t2:${t2 ?? tinta?.t2}`,
+  style,
+]
+  .filter(Boolean)
+  .join(';');
+---
+
+<svg
+  class:list={['oggetto', classe]}
+  viewBox="0 0 200 200"
+  width={dimensione}
+  height={dimensione}
+  role={alt ? 'img' : undefined}
+  aria-label={alt}
+  aria-hidden={alt ? undefined : 'true'}
+  focusable="false"
+  style={stile || undefined}
+  {...resto}
+>
+  <use href={`/oggetti.svg#${nome}`}></use>
+</svg>

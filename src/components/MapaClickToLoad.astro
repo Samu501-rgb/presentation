@@ -1,0 +1,100 @@
+---
+/**
+ * Mappa Google "click-to-load": prima del clic NESSUNA richiesta a Google.
+ * Al clic carica l'iframe (title="Mappa di Gino Casa", data-lenis-prevent).
+ */
+import { Icon } from 'astro-icon/components';
+import { urlMappaEmbed, linkIndicazioni } from '../data/negozio';
+
+interface Props {
+  class?: string;
+}
+const { class: classe } = Astro.props;
+---
+
+<div
+  class:list={[
+    'mappa-click su-chiaro card relative overflow-hidden bg-argilla text-inchiostro',
+    classe,
+  ]}
+  style="aspect-ratio: 4/3"
+  data-mappa-click
+  data-src={urlMappaEmbed()}
+>
+  <div
+    class="mappa-click__anteprima absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center"
+    data-mappa-anteprima
+  >
+    <svg
+      viewBox="0 0 120 80"
+      class="mappa-click__sfondo absolute inset-0 size-full opacity-60"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <path
+        d="M0 40H120M0 18H120M0 62H120M30 0V80M64 0V80M96 0V80"
+        stroke="#F5EFE4"
+        stroke-width="5"
+        fill="none"
+      ></path>
+    </svg>
+    <span
+      class="mappa-click__pin relative grid size-14 place-items-center rounded-full bg-pomodoro-700 text-carta"
+      aria-hidden="true"
+    >
+      <Icon name="lucide:map-pin" class="icona size-7" />
+    </span>
+    <p class="relative max-w-[34ch] text-sm font-semibold">
+      Caricando la mappa accetti i cookie di Google.
+    </p>
+    <div class="relative flex flex-wrap items-center justify-center gap-3">
+      <button type="button" class="pillola" data-mappa-carica hidden>
+        Carica la mappa
+      </button>
+      <a
+        href={linkIndicazioni()}
+        class="pillola pillola--carta pillola--vuota"
+        target="_blank"
+        rel="noopener"
+      >
+        Apri in Google Maps<span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes rimbalzo-pin {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  html[data-motion='full'] .mappa-click__pin {
+    animation: rimbalzo-pin 1.6s var(--ease-casa) infinite;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-mappa-click]').forEach((box) => {
+    const btn = box.querySelector<HTMLButtonElement>('[data-mappa-carica]');
+    if (!btn) return;
+    btn.hidden = false;
+    btn.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = box.dataset.src || '';
+      iframe.title = 'Mappa di Gino Casa';
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      iframe.className = 'absolute inset-0 size-full border-0';
+      iframe.setAttribute('data-lenis-prevent', '');
+      iframe.setAttribute('allowfullscreen', '');
+      box.querySelector('[data-mappa-anteprima]')?.remove();
+      box.append(iframe);
+      iframe.focus();
+    });
+  });
+</script>

@@ -1,0 +1,12 @@
+{
+  "nome": "Strofinacci verdi",
+  "reparto": "tessile",
+  "descrizione": "Strofinacci da cucina con le righe verdi.",
+  "colore": "verde",
+  "illustrazione": "strofinaccio",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

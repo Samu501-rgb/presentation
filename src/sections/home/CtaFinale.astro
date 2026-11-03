@@ -1,0 +1,71 @@
+---
+/**
+ * CTA finale: "Passa a trovarci" enorme che si riempie di pomodoro da sinistra
+ * a destra in scrub (layer duplicato con clip-path), pulsanti magnetici.
+ */
+import MagneticButton from '../../components/MagneticButton.astro';
+import { linkWhatsApp, linkIndicazioni, hrefTelefono, telefonoLeggibile } from '../../data/negozio';
+const tel = hrefTelefono();
+---
+
+<section
+  class="cta-finale contenitore overflow-clip py-24 text-center md:py-40"
+  aria-labelledby="cta-titolo"
+  data-cta-finale
+>
+  <h2
+    id="cta-titolo"
+    class="cta-finale__titolo relative mx-auto inline-block font-display font-extrabold leading-[0.85] tracking-[-0.05em]"
+  >
+    <span class="block">Passa a trovarci</span>
+    <span
+      class="cta-finale__riempi absolute inset-0 block text-pomodoro"
+      aria-hidden="true"
+      data-riempi
+    >
+      Passa a trovarci
+    </span>
+  </h2>
+  <p class="mt-8 text-xl md:text-2xl">o scrivici adesso.</p>
+  <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+    <MagneticButton
+      href={linkWhatsApp()}
+      testo="Scrivici su WhatsApp"
+      variante="pomodoro"
+      icona="lucide:message-circle"
+      esterno
+    />
+    <MagneticButton href={linkIndicazioni()} testo="Come arrivare" icona="lucide:map-pin" esterno />
+    {tel && (
+      <MagneticButton
+        href={tel}
+        testo={`Chiama ${telefonoLeggibile()}`}
+        vuota
+        icona="lucide:phone"
+      />
+    )}
+  </div>
+</section>
+
+<style>
+  .cta-finale__titolo {
+    font-size: clamp(3.25rem, 10.5vw, 11rem);
+  }
+  .cta-finale__riempi {
+    clip-path: inset(0 100% 0 0);
+  }
+  /* Senza animazioni: il titolo resta inchiostro, il layer non serve. */
+  :global(html:not([data-motion='full'])) .cta-finale__riempi {
+    display: none;
+  }
+</style>
+
+<script>
+  import { registra } from '../../scripts/motion/setup';
+  registra({
+    nome: 'cta',
+    carica: () => import('../../scripts/motion/cta'),
+    quando: 'vicino',
+    el: '[data-cta-finale]',
+  });
+</script>

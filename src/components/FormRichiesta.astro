@@ -1,0 +1,291 @@
+---
+/**
+ * Form "Te lo troviamo" (riusato anche dalle liste regalo).
+ * Invio principale: compone un messaggio WhatsApp (wa.me/[WHATSAPP]?text=…).
+ * Invio alternativo: POST a [ENDPOINT_FORM] (solo se configurato in negozio.ts).
+ * Senza JS: il form fa GET verso wa.me e il campo "text" diventa il messaggio.
+ * Label flottanti, errori annunciati con aria-live, shake leggero, check di conferma.
+ */
+import { Icon } from 'astro-icon/components';
+import { negozio, confermato } from '../data/negozio';
+
+interface Props {
+  id?: string;
+  titolo?: string;
+  /** Tipo di richiesta: compare nel messaggio. */
+  tipo?: 'ricerca' | 'lista-regalo' | 'contatto';
+  conQuantita?: boolean;
+  conOccasione?: boolean;
+  etichettaCosa?: string;
+}
+const {
+  id = 'richiesta',
+  tipo = 'ricerca',
+  conQuantita = true,
+  conOccasione = false,
+  etichettaCosa = 'Cosa cerchi?',
+} = Astro.props;
+const endpoint = confermato(negozio.endpointForm);
+const numero = confermato(negozio.whatsapp);
+const azioneNoJs = numero ? `https://wa.me/39${numero.replace(/\D/g, '')}` : 'https://wa.me/';
+---
+
+<form
+  class="modulo"
+  id={`form-${id}`}
+  action={azioneNoJs}
+  method="get"
+  target="_blank"
+  data-modulo
+  data-tipo={tipo}
+  data-endpoint={endpoint}
+  aria-describedby={`${id}-nota`}
+>
+  <p id={`${id}-nota`} class="mb-6 text-sm text-grafite">
+    I campi con * sono obbligatori.
+  </p>
+  <div class="grid gap-5 md:grid-cols-2">
+    {conOccasione && (
+      <div class="campo md:col-span-2">
+        <select id={`${id}-occasione`} name="occasione" class="campo__input" required>
+          <option value="">Scegli…</option>
+          <option>Casa nuova</option>
+          <option>Matrimonio</option>
+          <option>Compleanno</option>
+          <option>Altro</option>
+        </select>
+        <label for={`${id}-occasione`} class="campo__label">
+          Occasione *
+        </label>
+        <p class="campo__errore" id={`${id}-occasione-err`} aria-live="polite"></p>
+      </div>
+    )}
+    <div class="campo md:col-span-2">
+      <textarea
+        id={`${id}-cosa`}
+        name="text"
+        rows="4"
+        class="campo__input"
+        placeholder=" "
+        required
+        minlength="3"
+        aria-describedby={`${id}-cosa-err`}
+      ></textarea>
+      <label for={`${id}-cosa`} class="campo__label">
+        {etichettaCosa} *
+      </label>
+      <p class="campo__errore" id={`${id}-cosa-err`} aria-live="polite"></p>
+    </div>
+    {conQuantita && (
+      <div class="campo">
+        <input
+          id={`${id}-quantita`}
+          name="quantita"
+          type="number"
+          min="1"
+          max="999"
+          inputmode="numeric"
+          class="campo__input"
+          placeholder=" "
+        />
+        <label for={`${id}-quantita`} class="campo__label">
+          Quantità
+        </label>
+      </div>
+    )}
+    <div class="campo">
+      <input
+        id={`${id}-nome`}
+        name="nome"
+        type="text"
+        autocomplete="given-name"
+        class="campo__input"
+        placeholder=" "
+        required
+        aria-describedby={`${id}-nome-err`}
+      />
+      <label for={`${id}-nome`} class="campo__label">
+        Nome *
+      </label>
+      <p class="campo__errore" id={`${id}-nome-err`} aria-live="polite"></p>
+    </div>
+    <div class="campo">
+      <input
+        id={`${id}-telefono`}
+        name="telefono"
+        type="tel"
+        autocomplete="tel"
+        inputmode="tel"
+        class="campo__input"
+        placeholder=" "
+        pattern="[0-9 +]{6,20}"
+        aria-describedby={`${id}-telefono-err`}
+      />
+      <label for={`${id}-telefono`} class="campo__label">
+        Telefono
+      </label>
+      <p class="campo__errore" id={`${id}-telefono-err`} aria-live="polite"></p>
+    </div>
+    <div class="campo md:col-span-2">
+      <textarea
+        id={`${id}-note`}
+        name="note"
+        rows="2"
+        class="campo__input"
+        placeholder=" "
+      ></textarea>
+      <label for={`${id}-note`} class="campo__label">
+        Note
+      </label>
+    </div>
+    {endpoint && (
+      <div class="md:col-span-2" data-solo-endpoint>
+        <label for={`${id}-foto`} class="mb-2 block font-semibold">
+          Foto (facoltativa, solo con l’invio via email)
+        </label>
+        <input
+          id={`${id}-foto`}
+          name="foto"
+          type="file"
+          accept="image/*"
+          class="block w-full text-sm"
+        />
+      </div>
+    )}
+  </div>
+
+  <p class="mt-5 text-sm text-grafite">
+    <Icon name="lucide:camera" class="icona mr-1 inline size-4 align-[-3px]" aria-hidden="true" />
+    Hai una foto? Con l’invio su WhatsApp la alleghi direttamente in chat.
+  </p>
+
+  <div class="mt-6 flex items-start gap-3">
+    <input
+      id={`${id}-privacy`}
+      name="privacy"
+      type="checkbox"
+      class="mt-1 size-6 shrink-0 accent-inchiostro"
+      required
+      aria-describedby={`${id}-privacy-err`}
+    />
+    <label for={`${id}-privacy`} class="text-sm">
+      Ho letto l’
+      <a href="/privacy-policy" class="link" target="_blank">
+        informativa privacy
+      </a>{' '}
+      e acconsento al trattamento dei miei dati per ricevere una risposta alla richiesta. *
+    </label>
+  </div>
+  <p class="campo__errore mt-1" id={`${id}-privacy-err`} aria-live="polite"></p>
+
+  <div class="mt-8 flex flex-wrap items-center gap-3">
+    <button type="submit" class="pillola pillola--pomodoro" data-invio="whatsapp">
+      <Icon name="lucide:message-circle" class="icona size-5" aria-hidden="true" />
+      <span>Invia su WhatsApp</span>
+    </button>
+    {endpoint && (
+      <button type="submit" class="pillola pillola--vuota" data-invio="email">
+        <Icon name="lucide:mail" class="icona size-5" aria-hidden="true" />
+        <span>Invia via email</span>
+      </button>
+    )}
+  </div>
+
+  <div
+    class="modulo__conferma mt-8 hidden items-center gap-4 rounded-2xl bg-limone p-5"
+    role="status"
+    data-conferma
+  >
+    <svg viewBox="0 0 52 52" class="size-12 shrink-0" aria-hidden="true">
+      <circle cx="26" cy="26" r="24" fill="#24594B"></circle>
+      <path
+        class="modulo__check"
+        d="M15 27l7 7l15 -16"
+        fill="none"
+        stroke="#F5EFE4"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        pathLength="1"
+      ></path>
+    </svg>
+    <p class="font-semibold" data-conferma-testo>
+      Fatto! Abbiamo aperto WhatsApp con il tuo messaggio: premi invio e ti rispondiamo.
+    </p>
+  </div>
+</form>
+
+<style>
+  .campo {
+    position: relative;
+  }
+  .campo__input {
+    width: 100%;
+    min-height: 3.5rem;
+    padding: 1.6rem 1rem 0.5rem;
+    border-radius: 1rem;
+    border: 2px solid var(--color-inchiostro);
+    background: #fff;
+    color: var(--color-inchiostro);
+    font: inherit;
+  }
+  select.campo__input {
+    padding-top: 1.4rem;
+  }
+  .campo__label {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    color: var(--color-grafite);
+    pointer-events: none;
+    transform-origin: left top;
+    transition:
+      transform 0.25s var(--ease-casa),
+      color 0.25s;
+  }
+  /* Label flottante */
+  .campo__input:focus + .campo__label,
+  .campo__input:not(:placeholder-shown) + .campo__label,
+  select.campo__input + .campo__label {
+    transform: translateY(-0.6rem) scale(0.8);
+    color: var(--color-inchiostro);
+    font-weight: 600;
+  }
+  .campo__errore {
+    min-height: 1.25rem;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-pomodoro-700);
+  }
+  .campo__errore:not(:empty)::before {
+    content: '⚠ ';
+  }
+  .campo--errore .campo__input {
+    border-color: var(--color-pomodoro-700);
+    border-width: 3px;
+  }
+  :global(html[data-motion='full']) .campo--errore {
+    animation: shake 0.35s ease-in-out;
+  }
+  .modulo__conferma.is-visibile {
+    display: flex;
+  }
+  .modulo__check {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  :global(html[data-motion='full']) .is-visibile .modulo__check {
+    animation: disegna 0.6s var(--ease-casa) both 0.1s;
+  }
+  @keyframes disegna {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+</style>
+
+<script>
+  import { collegaModuli } from '../scripts/richiesta';
+  collegaModuli();
+</script>

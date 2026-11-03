@@ -1,0 +1,12 @@
+{
+  "nome": "Strofinacci a righe",
+  "reparto": "tessile",
+  "descrizione": "Strofinacci da cucina con le righe.",
+  "colore": "rosso",
+  "illustrazione": "strofinaccio",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": true,
+  "esempio": true
+}

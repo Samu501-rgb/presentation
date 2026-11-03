@@ -1,0 +1,45 @@
+---
+/**
+ * /liste-regalo — OPZIONALE. La pagina viene generata solo se
+ * negozio.flag.listeRegalo è true (default false): con il flag spento non
+ * esiste e non compare nella navigazione.
+ */
+import Base from '../layouts/Base.astro';
+import FormRichiesta from '../components/FormRichiesta.astro';
+import { negozio } from '../data/negozio';
+
+export function getStaticPaths() {
+  return negozio.flag.listeRegalo ? [{ params: { liste: 'liste-regalo' } }] : [];
+}
+const briciole = [
+  { nome: 'Home', href: '/' },
+  { nome: 'Liste regalo', href: '/liste-regalo' },
+];
+---
+
+<Base
+  titolo="Liste regalo – Gino Casa, bazar e casalinghi a Latina Est"
+  descrizione="Casa nuova, matrimonio o compleanno: crea la tua lista regalo da Gino Casa a Latina Est, di fronte alla farmacia."
+  og="home"
+  briciole={briciole}
+>
+  <section class="contenitore py-10 md:py-16" aria-labelledby="lr-titolo">
+    <h1 id="lr-titolo" class="titolo-1 !text-[clamp(3rem,9vw,8rem)]">
+      Liste regalo.
+    </h1>
+    <p class="mt-6 max-w-[46ch] text-lg">
+      Casa nuova, matrimonio, compleanno: scrivici cosa ti piacerebbe ricevere e prepariamo la
+      lista.
+    </p>
+  </section>
+  <section class="bg-limone py-16" aria-label="Richiesta lista regalo">
+    <div class="contenitore max-w-4xl">
+      <FormRichiesta
+        id="lista-regalo"
+        tipo="lista-regalo"
+        conOccasione
+        etichettaCosa="Cosa vorresti nella lista?"
+      />
+    </div>
+  </section>
+</Base>

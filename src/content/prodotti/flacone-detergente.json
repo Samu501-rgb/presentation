@@ -1,0 +1,12 @@
+{
+  "nome": "Flacone detergente",
+  "reparto": "pulizia-e-detersivi",
+  "descrizione": "Il detergente per le pulizie di casa.",
+  "colore": "verde",
+  "illustrazione": "flacone",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": true,
+  "inOfferta": false,
+  "esempio": true
+}

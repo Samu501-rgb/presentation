@@ -1,0 +1,226 @@
+---
+/**
+ * /reparti/[slug] — hero del reparto col suo colore, griglia filtrabile,
+ * mini-lookbook "Idee" e "Ti serve anche" (reparti correlati). Quick view con Flip.
+ */
+import { Icon } from 'astro-icon/components';
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Filtri from '../../components/Filtri.astro';
+import Oggetto from '../../components/Oggetto.astro';
+import Foto from '../../components/Foto.astro';
+import VistaRapida from '../../components/VistaRapida.astro';
+import { reparti, prodottiDelReparto, SFONDI_REPARTO, TINTE } from '../../data/catalogo';
+import { COLORI_PRODOTTO } from '../../content.config';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const elenco = await reparti();
+  return elenco.map((r) => ({ params: { slug: r.id }, props: { reparto: r } }));
+}
+
+const { reparto } = Astro.props;
+const r = reparto.data;
+const stile = SFONDI_REPARTO[r.colore];
+const elenco = await prodottiDelReparto(reparto.id);
+const tutti = await reparti();
+const correlati = r.correlati.map((c) => tutti.find((x) => x.id === c.id)).filter((x) => !!x);
+const colori = COLORI_PRODOTTO.filter((c) => elenco.some((p) => p.data.colore === c));
+const { Content } = await render(reparto);
+const tinte = Object.keys(TINTE);
+const briciole = [
+  { nome: 'Home', href: '/' },
+  { nome: 'Reparti', href: '/reparti' },
+  { nome: r.titolo, href: `/reparti/${reparto.id}` },
+];
+---
+
+<Base
+  titolo={`${r.titolo} a Latina – Gino Casa, bazar a Latina Est`}
+  descrizione={`${r.descrizione} Da Gino Casa, bazar e casalinghi a Latina Est di fronte alla farmacia.`}
+  og={`reparto-${reparto.id}`}
+  briciole={briciole}
+  mostraBriciole={false}
+>
+  <section
+    class:list={[
+      'reparto-hero relative overflow-clip pb-16 pt-28 md:pb-24 md:pt-36',
+      stile.bg,
+      stile.testo,
+      stile.scuro && 'su-scuro',
+    ]}
+    aria-labelledby="reparto-titolo"
+  >
+    <div class="contenitore griglia items-end gap-y-10">
+      <div class="col-span-4 md:col-span-7">
+        <nav aria-label="Percorso" class="mb-8 text-sm">
+          <ol class="flex flex-wrap gap-2">
+            <li>
+              <a href="/" class="link-anim">
+                Home
+              </a>{' '}
+              <span aria-hidden="true">/</span>
+            </li>
+            <li>
+              <a href="/reparti" class="link-anim">
+                Reparti
+              </a>{' '}
+              <span aria-hidden="true">/</span>
+            </li>
+            <li aria-current="page" class="font-semibold">
+              {r.titolo}
+            </li>
+          </ol>
+        </nav>
+        <p class="occhiello mb-4">Reparto {String(r.ordine).padStart(2, '0')}</p>
+        <h1 id="reparto-titolo" class="titolo-1 max-w-[11ch] !text-[clamp(3rem,9vw,8rem)]">
+          {r.titolo}
+        </h1>
+        <p class="mt-6 max-w-[44ch] text-lg md:text-xl">{r.descrizione}</p>
+        <div class="testo-lungo mt-4">
+          <Content />
+        </div>
+      </div>
+      <div class="col-span-4 md:col-span-5" aria-hidden="true">
+        <div class="reparto-hero__oggetti relative mx-auto aspect-square max-w-md">
+          {r.oggetti.map((o, k) => (
+            <div
+              class:list={['reparto-hero__oggetto absolute reveal', `reparto-hero__oggetto--${k}`]}
+            >
+              <Oggetto nome={o} colore={tinte[(k + r.ordine) % tinte.length]} dimensione={260} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-12" aria-labelledby="prodotti-titolo">
+    <Filtri colori={colori} totale={elenco.length} />
+    <div class="contenitore pt-8">
+      <h2 id="prodotti-titolo" class="titolo-3 mb-8">
+        Sullo scaffale
+      </h2>
+      <ul class="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6 lg:grid-cols-4">
+        {elenco.map((p) => (
+          <li
+            data-voce
+            data-slug={p.id}
+            data-reparto={p.data.reparto.id}
+            data-colore={p.data.colore}
+            data-offerta={p.data.inOfferta ? '1' : '0'}
+            data-nuovo={p.data.nuovo ? '1' : '0'}
+          >
+            <ProductCard prodotto={p} transizione vistaRapida />
+          </li>
+        ))}
+      </ul>
+      <div class="py-16 text-center" data-vuoto hidden>
+        <p class="titolo-3">Niente con questi filtri.</p>
+        <p class="mt-3">
+          <a href="/te-lo-troviamo" class="link">
+            Lo cerchi? Te lo troviamo noi.
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {r.idee.length > 0 && (
+    <section class="py-16 md:py-24" aria-labelledby="idee-titolo">
+      <div class="contenitore">
+        <h2 id="idee-titolo" class="titolo-2">
+          Idee
+        </h2>
+        <p class="mt-4 max-w-[50ch] text-lg text-grafite">
+          Qualche spunto dal reparto {r.titolo.toLowerCase()}. Le foto arrivano dal negozio.
+        </p>
+      </div>
+      <ul
+        class="lookbook mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[clamp(1rem,4vw,4rem)] pb-4 md:gap-6"
+        data-lenis-prevent
+        tabindex="0"
+        aria-label="Idee, scorri in orizzontale"
+      >
+        {r.idee.map((idea) => (
+          <li class="w-[75vw] shrink-0 snap-start md:w-[28rem]">
+            <Foto alt={idea.titolo} segnaposto={idea.segnaposto} rapporto="4/5" class="card" />
+            <h3 class="mt-4 text-xl font-bold">{idea.titolo}</h3>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {correlati.length > 0 && (
+    <section class="contenitore py-16 md:py-24" aria-labelledby="correlati-titolo">
+      <h2 id="correlati-titolo" class="titolo-2">
+        Ti serve anche
+      </h2>
+      <ul class="mt-10 grid gap-6 md:grid-cols-2">
+        {correlati.map((c) => {
+          const s = SFONDI_REPARTO[c!.data.colore];
+          return (
+            <li>
+              <a
+                href={`/reparti/${c!.id}`}
+                class:list={[
+                  'card group flex items-center justify-between gap-6 p-6 md:p-8',
+                  s.bg,
+                  s.testo,
+                ]}
+              >
+                <div>
+                  <h3 class="titolo-3">{c!.data.titolo}</h3>
+                  <p class="mt-2 max-w-[36ch]">{c!.data.descrizione}</p>
+                </div>
+                <span
+                  class="grid size-24 shrink-0 place-items-center rounded-full bg-carta transition-transform duration-500 group-hover:rotate-12 md:size-32"
+                  aria-hidden="true"
+                >
+                  <Oggetto nome={c!.data.oggetti[0]} class="w-2/3" dimensione={100} />
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <p class="mt-10">
+        <a href="/reparti" class="link-anim inline-flex items-center gap-2 font-semibold">
+          Tutti i reparti <Icon name="lucide:arrow-right" class="icona size-4" aria-hidden="true" />
+        </a>
+      </p>
+    </section>
+  )}
+
+  <VistaRapida />
+</Base>
+
+<style>
+  .reparto-hero__oggetto--0 {
+    width: 62%;
+    left: 2%;
+    bottom: 0;
+  }
+  .reparto-hero__oggetto--1 {
+    width: 46%;
+    right: 0;
+    top: 4%;
+    rotate: 10deg;
+  }
+  .reparto-hero__oggetto--2 {
+    width: 38%;
+    right: 6%;
+    bottom: 4%;
+    rotate: -8deg;
+  }
+  .lookbook {
+    scrollbar-width: thin;
+    scroll-padding-inline: clamp(1rem, 4vw, 4rem);
+  }
+</style>
+
+<script>
+  import { collegaFiltri } from '../../scripts/filtri';
+  collegaFiltri();
+</script>

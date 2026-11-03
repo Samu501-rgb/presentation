@@ -1,0 +1,182 @@
+---
+/**
+ * Layout di base: head (SEO, OG, JSON-LD), skip link, header, footer,
+ * menu mobile, FAB WhatsApp, preloader (solo home) e avvio delle animazioni.
+ */
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import MenuOverlay from '../components/MenuOverlay.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFab from '../components/WhatsAppFab.astro';
+import Preloader from '../components/Preloader.astro';
+import Breadcrumb, { type Briciola } from '../components/Breadcrumb.astro';
+import { schemaNegozio, schemaBriciole } from '../data/seo';
+import { negozio } from '../data/negozio';
+
+interface Props {
+  titolo: string;
+  descrizione: string;
+  /** Nome del file in public/og senza estensione. */
+  og?: string;
+  briciole?: Briciola[];
+  /** Mostra le briciole visibili sotto l'header. */
+  mostraBriciole?: boolean;
+  /** Classe di sfondo del body della pagina. */
+  classeMain?: string;
+  noindex?: boolean;
+}
+
+const {
+  titolo,
+  descrizione,
+  og = 'home',
+  briciole,
+  mostraBriciole = true,
+  classeMain,
+  noindex = false,
+} = Astro.props;
+
+const sito = Astro.site!.toString().replace(/\/$/, '');
+const percorso = Astro.url.pathname.replace(/\/$/, '') || '/';
+const canonical = `${sito}${percorso === '/' ? '/' : percorso}`;
+const immagineOg = `${sito}/og/${og}.jpg`;
+const èHome = percorso === '/';
+const jsonLd = [schemaNegozio(), ...(briciole ? [schemaBriciole(briciole)] : [])];
+---
+
+<!doctype html>
+<html lang="it" data-pagina={èHome ? 'home' : 'interna'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titolo}</title>
+    <meta name="description" content={descrizione} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#F5EFE4" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:site_name" content={negozio.nome} />
+    <meta property="og:title" content={titolo} />
+    <meta property="og:description" content={descrizione} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={immagineOg} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={titolo} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titolo} />
+    <meta name="twitter:description" content={descrizione} />
+    <meta name="twitter:image" content={immagineOg} />
+
+    <!-- Font self-hosted: precarico solo il display dell'H1 -->
+    <Font cssVariable="--font-bricolage" preload={[{ weight: '800' }]} />
+    <Font cssVariable="--font-instrument" />
+
+    <!--
+      Script inline (prima di qualsiasi rendering): classe .js, preferenza animazioni,
+      serranda alla prima visita. Valori in localStorage/sessionStorage sempre in try/catch.
+    -->
+    <script is:inline>
+      (function () {
+        const d = document.documentElement;
+        d.classList.add('js');
+        const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let m = ridotto ? 'reduce' : 'full';
+        try {
+          const s = localStorage.getItem('gc-motion');
+          if (s === 'off') m = 'reduce';
+          if (s === 'on') m = 'full';
+        } catch {
+          /* storage non disponibile */
+        }
+        d.setAttribute('data-motion', m);
+        try {
+          if (
+            m === 'full' &&
+            d.getAttribute('data-pagina') === 'home' &&
+            !sessionStorage.getItem('gc-serranda')
+          ) {
+            sessionStorage.setItem('gc-serranda', '1');
+            d.classList.add('serranda');
+          }
+        } catch {
+          /* storage non disponibile */
+        }
+        // Rete di sicurezza: se il motore delle animazioni non parte, niente resta nascosto.
+        setTimeout(function () {
+          if (!window.__gcMotion) d.classList.add('motion-ko');
+        }, 3000);
+      })();
+    </script>
+
+    {jsonLd.map((s) => (
+      <script type="application/ld+json" set:html={JSON.stringify(s)} />
+    ))}
+  </head>
+  <body>
+    <a href="#contenuto" class="salta-link">
+      Vai al contenuto
+    </a>
+    {èHome && <Preloader />}
+    <Header />
+    <div class="sipario-main">
+      <main id="contenuto" tabindex="-1" class:list={['min-h-[60vh] outline-none', classeMain]}>
+        {briciole && mostraBriciole && (
+          <div class="contenitore pt-28 md:pt-32">
+            <Breadcrumb voci={briciole} />
+          </div>
+        )}
+        <slot />
+      </main>
+    </div>
+    <Footer />
+    <WhatsAppFab />
+    <MenuOverlay />
+
+    <script>
+      import '../scripts/lista';
+      import { avvia } from '../scripts/motion/setup';
+      avvia();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .salta-link {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 200;
+    padding: 0.75rem 1.25rem;
+    border-radius: 999px;
+    background: var(--color-inchiostro);
+    color: var(--color-carta);
+    font-weight: 700;
+    transform: translateY(-200%);
+  }
+  .salta-link:focus {
+    transform: none;
+  }
+  /* Effetto sipario: il contenuto scorre via e scopre il footer fermo dietro. Solo desktop. */
+  @media (min-width: 1024px) and (min-height: 760px) {
+    html[data-motion='full'] .sipario-main {
+      position: relative;
+      z-index: 1;
+      background: var(--color-carta);
+      box-shadow: 0 30px 60px -30px rgb(31 26 23 / 0.5);
+    }
+    html[data-motion='full'] .pie {
+      position: sticky;
+      bottom: 0;
+      z-index: 0;
+    }
+  }
+</style>

@@ -1,0 +1,12 @@
+{
+  "nome": "Candela",
+  "reparto": "piccoli-regali-e-decorazione",
+  "descrizione": "Una candela per la sera.",
+  "colore": "rosso",
+  "illustrazione": "candela",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

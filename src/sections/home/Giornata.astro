@@ -1,0 +1,341 @@
+---
+/**
+ * "Una giornata in casa": storytelling bloccato (pin ≈ 400vh, solo ≥ 768px).
+ * Tutto il testo è nel DOM in ordine logico. Senza JS, sotto 768px o con
+ * animazioni off diventano 4 blocchi impilati, ognuno col suo colore.
+ * Animazioni in scripts/motion/giornata.ts.
+ */
+import { Icon } from 'astro-icon/components';
+import Oggetto from '../../components/Oggetto.astro';
+import type { NomeOggetto } from '../../data/oggetti';
+
+const capitoli: {
+  ora: string;
+  orario: string;
+  momento: string;
+  titolo: string;
+  testo: string;
+  reparto: { slug: string; nome: string };
+  oggetti: [NomeOggetto, string][];
+  sfondo: string;
+  testoClasse: string;
+  scuro: boolean;
+}[] = [
+  {
+    ora: '07:30',
+    orario: '7:30',
+    momento: 'Mattino',
+    titolo: 'Il caffè non aspetta.',
+    testo: 'Moka, tazze e barattoli: la giornata comincia in cucina, con quello che serve davvero.',
+    reparto: { slug: 'cucina', nome: 'Cucina' },
+    oggetti: [
+      ['moka', 'rosso'],
+      ['tazza', 'azzurro'],
+      ['barattolo', 'verde'],
+    ],
+    sfondo: 'bg-limone',
+    testoClasse: 'text-inchiostro',
+    scuro: false,
+  },
+  {
+    ora: '13:00',
+    orario: '13:00',
+    momento: 'Pranzo',
+    titolo: 'A tavola, si sta meglio in tanti.',
+    testo:
+      'Piatti, bicchieri e tazze per apparecchiare tutti i giorni, e anche quando arrivano gli ospiti.',
+    reparto: { slug: 'tavola', nome: 'Tavola' },
+    oggetti: [
+      ['piatto', 'giallo'],
+      ['bicchiere', 'azzurro'],
+      ['pentola', 'verde'],
+    ],
+    sfondo: 'bg-pomodoro-700',
+    testoClasse: 'text-carta',
+    scuro: true,
+  },
+  {
+    ora: '17:00',
+    orario: '17:00',
+    momento: 'Pomeriggio',
+    titolo: 'Ogni cosa al suo posto.',
+    testo:
+      'Contenitori, cestini e barattoli: il pomeriggio è il momento giusto per mettere in ordine.',
+    reparto: { slug: 'ordine-e-contenitori', nome: 'Ordine e contenitori' },
+    oggetti: [
+      ['contenitore', 'rosso'],
+      ['cestino', 'giallo'],
+      ['barattolo', 'rosso'],
+    ],
+    sfondo: 'bg-mare',
+    testoClasse: 'text-inchiostro',
+    scuro: false,
+  },
+  {
+    ora: '21:00',
+    orario: '21:00',
+    momento: 'Sera',
+    titolo: 'Luce bassa, casa tua.',
+    testo: 'Candele, lampadine e piccole cose che fanno sera. Anche da regalare.',
+    reparto: { slug: 'piccoli-regali-e-decorazione', nome: 'Piccoli regali e decorazione' },
+    oggetti: [
+      ['candela', 'rosso'],
+      ['lampadina', 'giallo'],
+      ['vaso', 'azzurro'],
+    ],
+    sfondo: 'bg-bonifica',
+    testoClasse: 'text-carta',
+    scuro: true,
+  },
+];
+const cifre = capitoli.map((c) => c.ora.replace(':', '').split('').map(Number));
+---
+
+<section
+  class="giornata relative"
+  aria-labelledby="giornata-titolo"
+  data-giornata
+  data-cifre={JSON.stringify(cifre)}
+>
+  <div class="giornata__palco relative" data-giornata-palco>
+    <!-- Sfondi sovrapposti (crossfade in pin) -->
+    <div class="giornata__sfondi absolute inset-0" aria-hidden="true">
+      {capitoli.map((c, i) => (
+        <div class:list={['giornata__sfondo absolute inset-0', c.sfondo]} data-sfondo={i} />
+      ))}
+    </div>
+
+    <div class="giornata__testata contenitore relative z-10 pt-20 md:pt-0">
+      <h2 id="giornata-titolo" class="occhiello flex items-center gap-2">
+        <span class="inline-block size-2.5 rounded-full bg-current" aria-hidden="true"></span>Una
+        giornata in casa
+      </h2>
+      <!-- Orologio con cifre che rotolano (decorativo: le ore sono nel testo dei capitoli) -->
+      <div class="giornata__orologio tabular" aria-hidden="true" data-orologio>
+        {[0, 1, 2, 3].map((col) => (
+          <>
+            {col === 2 && <span class="giornata__duepunti">:</span>}
+            <span class="giornata__colonna">
+              <span class="giornata__striscia" data-colonna={col}>
+                {Array.from({ length: 10 }, (_, n) => (
+                  <span>{n}</span>
+                ))}
+              </span>
+            </span>
+          </>
+        ))}
+      </div>
+    </div>
+
+    <ol class="giornata__capitoli relative z-10">
+      {capitoli.map((c, i) => (
+        <li
+          class:list={['giornata__capitolo', c.sfondo, c.testoClasse, c.scuro && 'su-scuro']}
+          data-capitolo={i}
+          data-scuro={c.scuro ? '1' : '0'}
+        >
+          <div class="contenitore giornata__griglia">
+            <div class="giornata__testo">
+              <p
+                class="giornata__ora-statica tabular font-display text-7xl font-extrabold tracking-tighter"
+                aria-hidden="true"
+              >
+                {c.ora}
+              </p>
+              <h3 class="giornata__titolo titolo-2 mt-2 max-w-[14ch]">
+                <span class="occhiello mb-4 block !font-sans">
+                  Ore {c.orario} · {c.momento}
+                </span>
+                <span class="giornata__titolo-testo block">{c.titolo}</span>
+              </h3>
+              <p class="giornata__descrizione mt-6 max-w-[38ch] text-lg">{c.testo}</p>
+              <a
+                href={`/reparti/${c.reparto.slug}`}
+                class:list={['pillola mt-8', c.scuro ? 'pillola--carta' : '']}
+                data-capitolo-link
+              >
+                <span>Vai al reparto {c.reparto.nome}</span>
+                <Icon name="lucide:arrow-right" class="icona size-5" aria-hidden="true" />
+              </a>
+            </div>
+            <div class="giornata__oggetti" aria-hidden="true">
+              {c.oggetti.map(([nome, colore], k) => (
+                <div class:list={['giornata__oggetto', `giornata__oggetto--${k}`]} data-oggetto>
+                  <Oggetto nome={nome} colore={colore} dimensione={240} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <!-- Indicatore di avanzamento a 4 tacche, cliccabile (solo in pin) -->
+    <nav
+      class="giornata__tacche contenitore absolute inset-x-0 bottom-6 z-20"
+      aria-label="Momenti della giornata"
+      data-tacche
+      hidden
+    >
+      <ol class="flex gap-2">
+        {capitoli.map((c, i) => (
+          <li class="flex-1">
+            <button
+              type="button"
+              class="giornata__tacca tocco w-full text-left text-sm font-semibold"
+              data-tacca={i}
+            >
+              <span class="giornata__tacca-barra block h-1 rounded-full bg-current/25">
+                <span
+                  class="block h-full origin-left scale-x-0 rounded-full bg-current"
+                  data-tacca-riempi
+                />
+              </span>
+              <span class="mt-2 block tabular">
+                {c.ora} · {c.momento}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<style>
+  /* ---------- Versione impilata (default: senza JS, mobile, animazioni off) ---------- */
+  .giornata__sfondi,
+  .giornata__orologio {
+    display: none;
+  }
+  .giornata__testata {
+    padding-bottom: 2rem;
+  }
+  .giornata__capitolo {
+    padding-block: 4.5rem;
+  }
+  .giornata__griglia {
+    display: grid;
+    gap: 2rem;
+  }
+  .giornata__oggetti {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 0.9fr;
+    align-items: end;
+    gap: 0.5rem;
+    max-width: 28rem;
+  }
+  .giornata__oggetto--1 {
+    transform: rotate(8deg);
+  }
+  .giornata__oggetto--2 {
+    transform: rotate(-6deg);
+  }
+
+  /* ---------- Versione bloccata (classe aggiunta da giornata.ts, ≥ 768px) ---------- */
+  :global(.giornata--pin) .giornata__palco {
+    height: 100svh;
+    overflow: hidden;
+  }
+  :global(.giornata--pin) .giornata__sfondi,
+  :global(.giornata--pin) .giornata__orologio {
+    display: block;
+  }
+  :global(.giornata--pin) .giornata__testata {
+    position: absolute;
+    inset: 0 0 auto 0;
+    padding-top: 6.5rem;
+  }
+  :global(.giornata--pin) .giornata__capitoli {
+    position: absolute;
+    inset: 0;
+    display: grid;
+  }
+  :global(.giornata--pin) .giornata__capitolo {
+    grid-area: 1 / 1;
+    background: transparent;
+    padding-block: 0;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 7.5rem;
+  }
+  :global(.giornata--pin) .giornata__griglia {
+    width: 100%;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+  }
+  :global(.giornata--pin) .giornata__testo {
+    grid-column: 1 / span 6;
+  }
+  :global(.giornata--pin) .giornata__ora-statica {
+    display: none;
+  }
+  :global(.giornata--pin) .giornata__oggetti {
+    grid-column: 7 / span 6;
+    max-width: none;
+    height: 62svh;
+    display: block;
+  }
+  :global(.giornata--pin) .giornata__oggetto {
+    position: absolute;
+  }
+  :global(.giornata--pin) .giornata__oggetto--0 {
+    width: min(24vw, 42svh);
+    right: 34%;
+    bottom: 4%;
+  }
+  :global(.giornata--pin) .giornata__oggetto--1 {
+    width: min(16vw, 30svh);
+    right: 4%;
+    bottom: 32%;
+  }
+  :global(.giornata--pin) .giornata__oggetto--2 {
+    width: min(13vw, 24svh);
+    right: 12%;
+    bottom: 0;
+  }
+  .giornata__orologio {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(5rem, 15vw, 14rem);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    margin-top: 0.5rem;
+  }
+  :global(.giornata--pin) .giornata__orologio {
+    display: flex;
+  }
+  .giornata__colonna {
+    display: inline-block;
+    height: 1em;
+    overflow: hidden;
+  }
+  .giornata__striscia {
+    display: flex;
+    flex-direction: column;
+  }
+  .giornata__striscia > span {
+    display: block;
+    height: 1em;
+    text-align: center;
+    width: 0.62em;
+  }
+  .giornata__duepunti {
+    display: inline-block;
+    transform: translateY(-0.06em);
+  }
+  .giornata__tacca[aria-current='step'] {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>
+
+<script>
+  import { registra } from '../../scripts/motion/setup';
+  registra({
+    nome: 'giornata',
+    carica: () => import('../../scripts/motion/giornata'),
+    quando: 'idle',
+  });
+</script>

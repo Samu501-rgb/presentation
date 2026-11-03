@@ -1,0 +1,163 @@
+---
+/** /te-lo-troviamo — servizio "Lo cerchi? Te lo troviamo" + "La mia lista". */
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import FormRichiesta from '../components/FormRichiesta.astro';
+import MiaLista from '../components/MiaLista.astro';
+import Oggetto from '../components/Oggetto.astro';
+import { negozio } from '../data/negozio';
+
+const passi = [
+  {
+    n: '1',
+    titolo: 'Descrivi o fotografa',
+    testo: 'Scrivici cosa cerchi, anche solo in due righe. Se hai una foto, ancora meglio.',
+  },
+  {
+    n: '2',
+    titolo: 'Ti rispondiamo',
+    testo: 'Ti diciamo se ce l’abbiamo o se possiamo procurartelo.',
+  },
+  {
+    n: '3',
+    titolo: 'Passi a ritirare',
+    testo: 'Quando è pronto, lo trovi in negozio di fronte alla farmacia.',
+  },
+];
+const faq = [
+  { d: 'Quanto ci vuole?', r: negozio.tempiRicerca },
+  { d: 'Devo pagare un anticipo?', r: negozio.condizioniRicerca },
+  {
+    d: 'Posso mandare una foto?',
+    r: 'Sì: se scrivi su WhatsApp, allega la foto direttamente in chat.',
+  },
+  {
+    d: 'Posso prenotare più cose insieme?',
+    r: 'Sì: aggiungi i prodotti alla tua lista con il cuore e mandaci la lista in un messaggio.',
+  },
+];
+const briciole = [
+  { nome: 'Home', href: '/' },
+  { nome: 'Te lo troviamo', href: '/te-lo-troviamo' },
+];
+---
+
+<Base
+  titolo="Te lo troviamo – Gino Casa, bazar e casalinghi a Latina Est"
+  descrizione="Cerchi un articolo per la casa e non lo trovi? Scrivici su WhatsApp o compila la richiesta: Gino Casa, a Latina Est di fronte alla farmacia, prova a procurartelo."
+  og="te-lo-troviamo"
+  briciole={briciole}
+>
+  <section
+    class="contenitore griglia items-center gap-y-10 py-10 md:py-16"
+    aria-labelledby="tlt-titolo"
+  >
+    <div class="col-span-4 md:col-span-7">
+      <h1 id="tlt-titolo" class="titolo-1 !text-[clamp(3rem,9vw,8rem)]">
+        Lo cerchi? Te lo troviamo.
+      </h1>
+      <p class="mt-6 max-w-[46ch] text-lg md:text-xl">
+        Lo cerchi e non lo vedi? Mandaci una foto o due righe su WhatsApp: se non ce l’abbiamo,
+        proviamo a procurartelo.
+      </p>
+    </div>
+    <div class="col-span-4 md:col-span-5" aria-hidden="true">
+      <div class="relative mx-auto grid aspect-square max-w-sm place-items-center rounded-full bg-mare">
+        <span class="font-display text-[14rem] font-extrabold leading-none text-inchiostro/15">
+          ?
+        </span>
+        <Oggetto
+          nome="lampadina"
+          colore="giallo"
+          class="reveal absolute left-[8%] top-[12%] w-1/3"
+        />
+        <Oggetto
+          nome="regalo"
+          colore="rosso"
+          class="reveal absolute bottom-[8%] right-[10%] w-1/3"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="contenitore py-12 md:py-20" aria-labelledby="come-titolo">
+    <SectionHeading
+      occhiello="Come funziona"
+      titolo="Tre passi, nessuna fatica."
+      id="come-titolo"
+    />
+    <ol class="grid gap-8 md:grid-cols-3">
+      {passi.map((p) => (
+        <li class="reveal card bg-argilla p-6 md:p-8">
+          <span
+            class="tabular font-display text-6xl font-extrabold text-pomodoro"
+            aria-hidden="true"
+          >
+            {p.n}
+          </span>
+          <h3 class="titolo-3 mt-4">
+            <span class="visualmente-nascosto">Passo {p.n}: </span>
+            {p.titolo}
+          </h3>
+          <p class="mt-2">{p.testo}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="bg-limone py-16 md:py-24" aria-labelledby="richiesta-titolo" id="richiesta">
+    <div class="contenitore griglia gap-y-10">
+      <div class="col-span-4 md:col-span-4">
+        <h2 id="richiesta-titolo" class="titolo-2">
+          Fai la tua richiesta.
+        </h2>
+        <p class="mt-5 text-lg">
+          Compila i campi: prepariamo noi il messaggio, tu lo mandi su WhatsApp.
+        </p>
+      </div>
+      <div class="col-span-4 md:col-span-8">
+        <FormRichiesta />
+      </div>
+    </div>
+  </section>
+
+  <section class="contenitore py-16 md:py-24" aria-labelledby="lista-titolo" id="lista">
+    <SectionHeading
+      occhiello="La mia lista"
+      titolo="La tua lista della spesa del bazar."
+      id="lista-titolo"
+    >
+      I prodotti che hai salvato col cuore restano su questo dispositivo. Mandaci la lista: te li
+      mettiamo da parte.
+    </SectionHeading>
+    <MiaLista />
+  </section>
+
+  <section class="contenitore pb-24" aria-labelledby="faq-titolo">
+    <h2 id="faq-titolo" class="titolo-2 mb-8">
+      Domande frequenti
+    </h2>
+    <div class="max-w-3xl divide-y-2 divide-dashed divide-inchiostro/30 border-y-2 border-dashed border-inchiostro/30">
+      {faq.map((f) => (
+        <details class="faq group py-2">
+          <summary class="tocco flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-xl font-bold">
+            {f.d}
+            <span
+              class="grid size-9 shrink-0 place-items-center rounded-full bg-inchiostro text-carta transition-transform group-open:rotate-45"
+              aria-hidden="true"
+            >
+              +
+            </span>
+          </summary>
+          <p class="pb-4 text-lg">{f.r}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

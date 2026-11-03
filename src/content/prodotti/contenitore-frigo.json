@@ -1,0 +1,12 @@
+{
+  "nome": "Contenitore per il frigo",
+  "reparto": "ordine-e-contenitori",
+  "descrizione": "Per il pranzo da portare al lavoro.",
+  "colore": "rosso",
+  "illustrazione": "contenitore",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

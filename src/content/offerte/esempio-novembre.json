@@ -1,0 +1,51 @@
+{
+  "titolo": "Questo mese in negozio",
+  "sottotitolo": "Offerte di esempio: sostituire con il volantino reale.",
+  "validaDal": "2026-11-01",
+  "validaFino": "2026-11-30",
+  "pagine": [
+    {
+      "alt": "Volantino, pagina 1",
+      "segnaposto": "VOLANTINO: pagina 1, 3:4"
+    },
+    {
+      "alt": "Volantino, pagina 2",
+      "segnaposto": "VOLANTINO: pagina 2, 3:4"
+    }
+  ],
+  "articoli": [
+    {
+      "nome": "Moka 3 tazze",
+      "prodotto": "moka-3-tazze",
+      "prezzo": "[PREZZO]",
+      "prezzoPrima": "[PREZZO_PRIMA]",
+      "illustrazione": "moka",
+      "colore": "rosso"
+    },
+    {
+      "nome": "Piatto fondo",
+      "prodotto": "piatto-fondo",
+      "prezzo": "[PREZZO]",
+      "prezzoPrima": "[PREZZO_PRIMA]",
+      "illustrazione": "piatto",
+      "colore": "giallo"
+    },
+    {
+      "nome": "Spugne abrasive",
+      "prodotto": "spugne-abrasive",
+      "prezzo": "[PREZZO]",
+      "prezzoPrima": "[PREZZO_PRIMA]",
+      "illustrazione": "spugna",
+      "colore": "giallo"
+    },
+    {
+      "nome": "Strofinacci a righe",
+      "prodotto": "strofinacci-righe",
+      "prezzo": "[PREZZO]",
+      "prezzoPrima": "[PREZZO_PRIMA]",
+      "illustrazione": "strofinaccio",
+      "colore": "rosso"
+    }
+  ],
+  "esempio": true
+}

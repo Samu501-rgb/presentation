@@ -1,0 +1,41 @@
+---
+/**
+ * Interruttore "Animazioni on/off": imposta html[data-motion], salva la scelta in
+ * localStorage e reinizializza le animazioni (scripts/motion/setup.ts).
+ * Nascosto senza JS (senza JS non ci sono animazioni da spegnere).
+ */
+interface Props {
+  class?: string;
+  compatto?: boolean;
+}
+const { class: classe, compatto = false } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={[
+    'interruttore tocco inline-flex items-center gap-2 rounded-full text-sm font-semibold',
+    classe,
+  ]}
+  data-motion-toggle
+  aria-pressed="true"
+  hidden
+>
+  <span class:list={[compatto && 'visualmente-nascosto']}>Animazioni</span>
+  <span
+    class="interruttore__binario relative inline-block h-6 w-10 rounded-full border-2 border-current"
+    aria-hidden="true"
+  >
+    <span class="interruttore__pallino absolute left-0.5 top-0.5 size-4 rounded-full bg-current transition-transform duration-300"></span>
+  </span>
+  <span class="interruttore__stato visualmente-nascosto" data-motion-stato>
+    attive
+  </span>
+</button>
+
+<style>
+  .interruttore[aria-pressed='true'] .interruttore__pallino {
+    transform: translateX(1rem);
+    background: var(--color-pomodoro);
+  }
+</style>

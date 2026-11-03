@@ -1,0 +1,143 @@
+---
+/**
+ * "Lo cerchi? Te lo troviamo": 11 oggetti che compongono un grande "?" e poi
+ * una "✓" (scripts/motion/troviamo.ts). Lente che segue il mouse e ingrandisce.
+ * Senza JS o con animazioni off il "?" è già composto, statico.
+ */
+import Oggetto from '../../components/Oggetto.astro';
+import MagneticButton from '../../components/MagneticButton.astro';
+import { linkWhatsApp } from '../../data/negozio';
+import type { NomeOggetto } from '../../data/oggetti';
+
+// Coordinate in % del palco quadrato: "?" e "✓"
+const punto: [number, number][] = [
+  [28, 30],
+  [33, 16],
+  [46, 8],
+  [60, 10],
+  [70, 20],
+  [71, 34],
+  [63, 45],
+  [54, 53],
+  [51, 64],
+  [51, 74],
+  [51, 91],
+];
+const spunta: [number, number][] = [
+  [14, 52],
+  [22, 60],
+  [30, 68],
+  [38, 76],
+  [46, 68],
+  [54, 59],
+  [62, 50],
+  [70, 41],
+  [78, 32],
+  [86, 23],
+  [93, 14],
+];
+const oggetti: [NomeOggetto, string][] = [
+  ['tazza', 'rosso'],
+  ['lampadina', 'giallo'],
+  ['spugna', 'giallo'],
+  ['barattolo', 'azzurro'],
+  ['moka', 'rosso'],
+  ['regalo', 'rosso'],
+  ['cacciavite', 'giallo'],
+  ['candela', 'azzurro'],
+  ['dispenser', 'giallo'],
+  ['pallina', 'rosso'],
+  ['piatto', 'azzurro'],
+];
+const testoWa = 'Ciao Gino Casa! Sto cercando: ';
+---
+
+<section
+  class="troviamo relative overflow-clip bg-mare py-24 md:py-32"
+  aria-labelledby="troviamo-titolo"
+  data-troviamo
+>
+  <div class="contenitore griglia items-center gap-y-12">
+    <div class="col-span-4 md:col-span-6 md:col-start-7 md:row-start-1">
+      <p class="occhiello mb-4 flex items-center gap-2">
+        <span class="inline-block size-2.5 rounded-full bg-pomodoro-700" aria-hidden="true"></span>
+        Te lo troviamo
+      </p>
+      <h2 id="troviamo-titolo" class="titolo-2">
+        Lo cerchi? <span class="block">Te lo troviamo.</span>
+      </h2>
+      <p class="mt-6 max-w-[42ch] text-lg">
+        Lo cerchi e non lo vedi? Mandaci una foto o due righe su WhatsApp: se non ce l’abbiamo,
+        proviamo a procurartelo.
+      </p>
+      <div class="mt-9 flex flex-wrap gap-3">
+        <MagneticButton
+          href={linkWhatsApp(testoWa)}
+          testo="Chiedicelo su WhatsApp"
+          icona="lucide:message-circle"
+          esterno
+        />
+        <MagneticButton href="/te-lo-troviamo#richiesta" testo="Compila la richiesta" vuota />
+      </div>
+    </div>
+
+    <div class="col-span-4 md:col-span-6 md:row-start-1">
+      <div
+        class="troviamo__palco relative mx-auto aspect-square w-full max-w-[34rem]"
+        aria-hidden="true"
+        data-palco
+      >
+        {oggetti.map(([nome, colore], i) => (
+          <div
+            class="troviamo__oggetto absolute"
+            style={`left:${punto[i][0]}%;top:${punto[i][1]}%;--sx:${spunta[i][0]}%;--sy:${spunta[i][1]}%`}
+            data-oggetto
+            data-sx={spunta[i][0]}
+            data-sy={spunta[i][1]}
+            data-px={punto[i][0]}
+            data-py={punto[i][1]}
+          >
+            <div class="troviamo__lente-scala" data-scala>
+              <Oggetto nome={nome} colore={colore} dimensione={120} />
+            </div>
+          </div>
+        ))}
+        <svg
+          class="troviamo__lente pointer-events-none absolute left-0 top-0 hidden size-36"
+          viewBox="0 0 120 120"
+          data-lente
+        >
+          <circle
+            cx="52"
+            cy="52"
+            r="40"
+            fill="rgb(245 239 228 / 0.25)"
+            stroke="#1F1A17"
+            stroke-width="6"
+          ></circle>
+          <path d="M82 82l28 28" stroke="#1F1A17" stroke-width="12" stroke-linecap="round"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .troviamo__oggetto {
+    width: 15%;
+    translate: -50% -50%;
+  }
+  .troviamo__oggetto:last-of-type {
+    width: 19%;
+  }
+</style>
+
+<script>
+  import { registra } from '../../scripts/motion/setup';
+  registra({
+    nome: 'troviamo',
+    carica: () => import('../../scripts/motion/troviamo'),
+    quando: 'vicino',
+    el: '[data-troviamo]',
+  });
+</script>

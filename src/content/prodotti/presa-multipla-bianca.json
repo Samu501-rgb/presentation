@@ -1,0 +1,12 @@
+{
+  "nome": "Presa multipla bianca",
+  "reparto": "ferramenta-ed-elettricita",
+  "descrizione": "La presa multipla che si nota poco.",
+  "colore": "bianco",
+  "illustrazione": "presa",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

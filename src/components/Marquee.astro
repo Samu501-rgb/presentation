@@ -1,0 +1,92 @@
+---
+/**
+ * Doppio marquee: due righe in direzioni opposte, contenuto duplicato con
+ * aria-hidden. Pulsante "Metti in pausa" visibile (WCAG 2.2.2).
+ * Senza JS o con animazioni off: testo statico su due righe.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  righe: string[][];
+  etichetta?: string;
+  class?: string;
+}
+const { righe, etichetta = 'Cosa trovi da Gino Casa', class: classe } = Astro.props;
+---
+
+<section
+  class:list={['marquee relative overflow-hidden py-8 md:py-12', classe]}
+  aria-label={etichetta}
+  data-marquee
+>
+  {righe.map((voci, r) => (
+    <div
+      class:list={[
+        'marquee__riga flex border-y-2 border-inchiostro py-3 md:py-4',
+        r === 0 ? 'bg-inchiostro text-carta -rotate-1' : 'bg-limone text-inchiostro rotate-1 -mt-1',
+      ]}
+      data-direzione={r % 2 === 0 ? '-1' : '1'}
+    >
+      <div class="marquee__traccia flex shrink-0" data-traccia>
+        {[0, 1].map((copia) => (
+          <ul
+            class="marquee__copia flex shrink-0 items-center"
+            aria-hidden={copia === 1 ? 'true' : undefined}
+            data-copia={copia}
+          >
+            {voci.map((v) => (
+              <li class="flex items-center gap-6 px-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
+                <span>{v}</span>
+                <span
+                  class="inline-block size-3 rounded-full bg-pomodoro md:size-4"
+                  aria-hidden="true"
+                />
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  ))}
+  <button
+    type="button"
+    class="marquee__pausa tocco absolute bottom-1 right-4 z-10 inline-flex items-center gap-2 rounded-full bg-carta px-4 text-sm font-semibold text-inchiostro ring-2 ring-inchiostro md:right-8"
+    aria-pressed="false"
+    data-marquee-pausa
+    hidden
+  >
+    <Icon name="lucide:pause" class="icona size-4" aria-hidden="true" data-icona-pausa />
+    <Icon name="lucide:play" class="icona hidden size-4" aria-hidden="true" data-icona-play />
+    <span data-marquee-etichetta>Metti in pausa</span>
+  </button>
+</section>
+
+<style>
+  /* Statico (default, senza JS o con animazioni off): righe che vanno a capo. */
+  .marquee__riga {
+    flex-wrap: wrap;
+  }
+  .marquee__traccia,
+  .marquee__copia {
+    flex-wrap: wrap;
+    flex-shrink: 1;
+    justify-content: center;
+  }
+  .marquee__copia[data-copia='1'] {
+    display: none;
+  }
+  /* In movimento (classe aggiunta da scripts/motion/marquee.ts) */
+  .marquee--attivo .marquee__riga,
+  .marquee--attivo .marquee__traccia,
+  .marquee--attivo .marquee__copia {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    justify-content: flex-start;
+  }
+  .marquee--attivo .marquee__copia[data-copia='1'] {
+    display: flex;
+  }
+  .marquee--attivo .marquee__traccia {
+    will-change: transform;
+  }
+</style>

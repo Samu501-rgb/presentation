@@ -1,0 +1,153 @@
+---
+/**
+ * Mini-mappa illustrata di Latina Est: griglia razionale di isolati, la croce
+ * verde della farmacia (generica, senza nome né logo) e il pin di Gino Casa di fronte.
+ * Illustrazione indicativa, non in scala. Animata da scripts/motion/negozio.ts.
+ */
+interface Props {
+  class?: string;
+}
+const { class: classe } = Astro.props;
+const isolati = [
+  [20, 20, 110, 90],
+  [150, 20, 160, 90],
+  [330, 20, 130, 70],
+  [480, 20, 100, 90],
+  [20, 130, 110, 60],
+  [150, 130, 160, 60],
+  [480, 130, 100, 60],
+  [20, 240, 110, 80],
+  [150, 240, 160, 80],
+  [480, 240, 100, 80],
+  [20, 340, 110, 60],
+  [150, 340, 160, 60],
+  [330, 340, 130, 60],
+  [480, 340, 100, 60],
+];
+---
+
+<figure class:list={['mappa-quartiere', classe]} data-mappa-quartiere>
+  <svg
+    viewBox="0 0 600 420"
+    class="block h-auto w-full"
+    role="img"
+    aria-labelledby="mq-titolo mq-desc"
+  >
+    <title id="mq-titolo">Mappa illustrata di Latina Est</title>
+    <desc id="mq-desc">
+      Gino Casa si trova sul viale, proprio di fronte alla farmacia. Illustrazione indicativa, non
+      in scala.
+    </desc>
+    <rect width="600" height="420" rx="24" fill="#F5EFE4"></rect>
+    <g class="mq-isolati" fill="#E9DCC8">
+      {isolati.map(([x, y, w, h]) => (
+        <rect x={x} y={y} width={w} height={h} rx="10"></rect>
+      ))}
+    </g>
+    <!-- Giardino -->
+    <g class="mq-alberi" fill="#24594B">
+      <circle cx="60" cy="275" r="11"></circle>
+      <circle cx="92" cy="292" r="9"></circle>
+      <circle cx="70" cy="305" r="7"></circle>
+      <circle cx="530" cy="60" r="10"></circle>
+      <circle cx="556" cy="84" r="8"></circle>
+    </g>
+    <!-- Strade: disegnate in sequenza con stroke-dashoffset -->
+    <g class="mq-strade" fill="none" stroke="#1F1A17" stroke-linecap="round" stroke-width="3">
+      <path pathLength="1" d="M0 215H600" stroke-width="5"></path>
+      <path pathLength="1" d="M0 120H600"></path>
+      <path pathLength="1" d="M0 330H600"></path>
+      <path pathLength="1" d="M140 0V420"></path>
+      <path pathLength="1" d="M320 0V420"></path>
+      <path pathLength="1" d="M470 0V420"></path>
+      <path pathLength="1" d="M0 0L140 120" stroke-dasharray="1 0"></path>
+    </g>
+    <text x="24" y="207" font-size="13" font-weight="600" fill="#5E564F" font-family="sans-serif">
+      viale
+    </text>
+    <!-- Farmacia (generica) -->
+    <g class="mq-farmacia">
+      <rect
+        x="330"
+        y="130"
+        width="130"
+        height="75"
+        rx="10"
+        fill="#FFFFFF"
+        stroke="#1F1A17"
+        stroke-width="3"
+      ></rect>
+      <g transform="translate(395 167)">
+        <path d="M-9 -24h18v15h15v18h-15v15h-18v-15h-15v-18h15z" fill="#24594B"></path>
+      </g>
+      <text
+        x="395"
+        y="150"
+        text-anchor="middle"
+        font-size="11"
+        font-weight="700"
+        fill="#1F1A17"
+        font-family="sans-serif"
+        letter-spacing="1"
+      >
+        FARMACIA
+      </text>
+    </g>
+    <!-- Gino Casa -->
+    <g class="mq-negozio">
+      <rect
+        x="330"
+        y="225"
+        width="130"
+        height="95"
+        rx="10"
+        fill="#F3C548"
+        stroke="#1F1A17"
+        stroke-width="3"
+      ></rect>
+      <text
+        x="395"
+        y="300"
+        text-anchor="middle"
+        font-size="13"
+        font-weight="800"
+        fill="#1F1A17"
+        font-family="sans-serif"
+      >
+        GINO CASA
+      </text>
+    </g>
+    <g class="mq-pin" transform="translate(395 262)">
+      <g class="mq-pin__corpo">
+        <path
+          d="M0 0c-16 -20 -24 -32 -24 -44a24 24 0 0 1 48 0c0 12 -8 24 -24 44z"
+          fill="#D9411E"
+          stroke="#1F1A17"
+          stroke-width="3"
+        ></path>
+        <path
+          d="M-10 -40l10 -9l10 9v11h-20z"
+          fill="#F5EFE4"
+          stroke="#1F1A17"
+          stroke-width="2.5"
+          stroke-linejoin="round"
+        ></path>
+      </g>
+    </g>
+    <!-- Etichetta -->
+    <g class="mq-etichetta" transform="translate(395 360)">
+      <rect x="-140" y="-17" width="280" height="34" rx="17" fill="#1F1A17"></rect>
+      <text
+        y="5"
+        text-anchor="middle"
+        font-size="14"
+        font-weight="700"
+        fill="#F5EFE4"
+        font-family="sans-serif"
+      >
+        Siamo qui, di fronte alla farmacia
+      </text>
+    </g>
+  </svg>
+  <figcaption class="mt-2 text-sm opacity-80">Illustrazione indicativa, non in scala.</figcaption>
+</figure>

@@ -1,0 +1,719 @@
+/*
+ * Gino Casa — stili globali.
+ * Tailwind 4 in modalità CSS-first: i token stanno in @theme.
+ * Contrasti WCAG indicati accanto a ogni colore (su carta #F5EFE4).
+ */
+@import 'tailwindcss';
+@import 'lenis/dist/lenis.css';
+
+@theme {
+  /* Palette "pop caldo" */
+  --color-carta: #f5efe4; /* sfondo principale */
+  --color-inchiostro: #1f1a17; /* testo — 15.1:1 */
+  --color-grafite: #5e564f; /* testo secondario — 6.3:1 */
+  --color-pomodoro: #d9411e; /* SOLO testi ≥24px (o ≥18.66px bold), forme — 3.9:1 */
+  --color-pomodoro-700: #b8331a; /* CTA piene con testo carta, link — 5.2:1 */
+  --color-limone: #f3c548; /* evidenziazioni, badge — inchiostro su limone 10.6:1 */
+  --color-bonifica: #24594b; /* Negozio/footer — carta su bonifica 7.0:1 */
+  --color-mare: #9ccfd8; /* card e "sera" — inchiostro su mare 10.1:1 */
+  --color-argilla: #e9dcc8; /* superfici secondarie, bordi, skeleton */
+
+  /* Famiglie: le variabili --font-bricolage / --font-instrument arrivano dal
+     componente <Font> di Astro, completo di fallback con metriche adattate. */
+  --font-display: var(--font-bricolage), 'Arial', sans-serif;
+  --font-sans: var(--font-instrument), 'Arial', sans-serif;
+
+  --radius-card: 24px;
+
+  --ease-casa: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-entrata: cubic-bezier(0.215, 0.61, 0.355, 1); /* ≈ power3.out */
+
+  --animate-pop: pop 0.5s var(--ease-casa) both;
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    background: var(--color-carta);
+    color: var(--color-inchiostro);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+    /* Nessuno scroll orizzontale della pagina, senza rompere position: sticky. */
+    overflow-x: clip;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem; /* 17px su mobile */
+    line-height: 1.5;
+    background: var(--color-carta);
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      font-size: 1.125rem; /* 18px */
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  ::selection {
+    background: var(--color-limone);
+    color: var(--color-inchiostro);
+  }
+
+  /* Focus sempre visibile: anello inchiostro 3px + alone limone. */
+  :focus-visible {
+    outline: 3px solid var(--color-inchiostro);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 7px var(--color-limone);
+    border-radius: 6px;
+  }
+
+  .su-scuro :focus-visible {
+    outline-color: var(--color-carta);
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+  }
+
+  /* Le icone Lucide usano un tratto coerente di 1.75 */
+  svg.icona {
+    stroke-width: 1.75;
+    flex: none;
+  }
+
+  /* Cifre tabulari per prezzi, codici e orari */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Tipografia e layout                                                 */
+/* ------------------------------------------------------------------ */
+@layer components {
+  .contenitore {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 4rem);
+  }
+
+  .griglia {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .griglia {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+  }
+
+  .titolo-1 {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 11vw, 10rem);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.88;
+  }
+
+  .titolo-2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 6vw, 5rem);
+    font-weight: 750;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+
+  .titolo-3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  .occhiello {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .testo-lungo {
+    max-width: 62ch;
+  }
+
+  .testo-lungo > * + * {
+    margin-top: 1em;
+  }
+
+  .testo-lungo h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin-top: 1.6em;
+  }
+
+  .testo-lungo h3 {
+    font-size: 1.375rem;
+    margin-top: 1.4em;
+  }
+
+  .testo-lungo ul {
+    list-style: disc;
+    padding-left: 1.25em;
+  }
+
+  .testo-lungo a,
+  .link {
+    color: var(--color-pomodoro-700);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  /* Link testuale: sottolineato che entra da sinistra ed esce a destra. */
+  .link-anim {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 2px;
+    background-position: 100% 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.45s var(--ease-casa);
+    padding-bottom: 2px;
+  }
+
+  .link-anim:hover,
+  .link-anim:focus-visible {
+    background-size: 100% 2px;
+    background-position: 0% 100%;
+  }
+
+  /* Pulsanti a pillola con testo che scorre in verticale (due copie). */
+  .pillola {
+    --pill-bg: var(--color-inchiostro);
+    --pill-fg: var(--color-carta);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    background: var(--pill-bg);
+    color: var(--pill-fg);
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    border: 2px solid var(--pill-bg);
+    transition:
+      background-color 0.3s var(--ease-casa),
+      color 0.3s var(--ease-casa);
+  }
+
+  .pillola--pomodoro {
+    --pill-bg: var(--color-pomodoro-700);
+    --pill-fg: var(--color-carta);
+  }
+
+  .pillola--limone {
+    --pill-bg: var(--color-limone);
+    --pill-fg: var(--color-inchiostro);
+  }
+
+  .pillola--carta {
+    --pill-bg: var(--color-carta);
+    --pill-fg: var(--color-inchiostro);
+  }
+
+  .pillola--vuota {
+    background: transparent;
+    color: var(--pill-bg);
+  }
+
+  .su-scuro .pillola--vuota {
+    --pill-bg: var(--color-carta);
+  }
+
+  /* Riquadri chiari dentro sezioni scure */
+  .su-chiaro .pillola--vuota {
+    --pill-bg: var(--color-inchiostro);
+  }
+
+  .su-scuro .su-chiaro :focus-visible {
+    outline-color: var(--color-inchiostro);
+  }
+
+  .pillola__testo {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    /* Altezza riga fissa per la doppia copia. */
+    line-height: 1.2;
+  }
+
+  .pillola__testo > span {
+    display: block;
+    transition: transform 0.5s var(--ease-casa);
+  }
+
+  .pillola__testo > span + span {
+    position: absolute;
+    inset: 0;
+    transform: translateY(110%);
+  }
+
+  .pillola:hover .pillola__testo > span:first-child,
+  .pillola:focus-visible .pillola__testo > span:first-child {
+    transform: translateY(-110%);
+  }
+
+  .pillola:hover .pillola__testo > span + span,
+  .pillola:focus-visible .pillola__testo > span + span {
+    transform: translateY(0);
+  }
+
+  /* Cartellino prezzo ruotato di −3° */
+  .cartellino {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.35em 0.8em 0.35em 1.1em;
+    background: var(--color-carta);
+    color: var(--color-inchiostro);
+    border: 2px solid var(--color-inchiostro);
+    border-radius: 6px 14px 14px 6px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    transform: rotate(-3deg);
+    position: relative;
+    line-height: 1.1;
+  }
+
+  .cartellino::before {
+    content: '';
+    position: absolute;
+    left: 0.4em;
+    top: 50%;
+    width: 0.4em;
+    height: 0.4em;
+    border-radius: 50%;
+    border: 2px solid var(--color-inchiostro);
+    transform: translateY(-50%);
+  }
+
+  /* Bollino rotondo tipo adesivo */
+  .bollino {
+    display: inline-grid;
+    place-items: center;
+    text-align: center;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    padding: 0.75em;
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    background: var(--color-limone);
+    color: var(--color-inchiostro);
+    box-shadow: 0 2px 0 rgb(31 26 23 / 0.15);
+  }
+
+  /* Separatore "scontrino" tratteggiato */
+  .scontrino {
+    border: 0;
+    height: 2px;
+    background-image: linear-gradient(90deg, currentColor 50%, transparent 50%);
+    background-size: 12px 2px;
+    opacity: 0.6;
+  }
+
+  .card {
+    border-radius: var(--radius-card);
+  }
+
+  /* Segnaposto foto onesto: argilla + etichetta con descrizione e rapporto */
+  .foto-segnaposto {
+    display: grid;
+    place-items: center;
+    background:
+      repeating-linear-gradient(-45deg, transparent 0 14px, rgb(31 26 23 / 0.04) 14px 28px),
+      var(--color-argilla);
+    color: var(--color-grafite);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  /* Skeleton per le immagini lazy: dissolvenza quando decodificate */
+  .skeleton {
+    background: var(--color-argilla);
+  }
+
+  html.js .skeleton img[loading='lazy'] {
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-casa);
+  }
+
+  html.js .skeleton img.caricata {
+    opacity: 1;
+  }
+
+  .visualmente-nascosto {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Aree toccabili minime 44×44 */
+  .tocco {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Contenuti lontani dalla piega SENZA trigger di scroll (vedi README) */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+
+  /* Oggetti illustrati (sprite SVG) */
+  .oggetto {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    overflow: visible;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Keyframes                                                           */
+/* ------------------------------------------------------------------ */
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes rivela {
+  from {
+    opacity: 0;
+    transform: translateY(2.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes accendi {
+  from {
+    opacity: 0.15;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes avanzamento {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes parallasse {
+  from {
+    transform: translateY(var(--par-da, 3rem));
+  }
+  to {
+    transform: translateY(var(--par-a, -3rem));
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes ruota {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Animazioni CSS legate allo scroll: SOLO dove supportate e con motion */
+/* attivo. Fuori da @supports il contenuto resta statico e visibile.     */
+/* ------------------------------------------------------------------ */
+@supports (animation-timeline: view()) {
+  html[data-motion='full'] .reveal {
+    animation: rivela linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 70%;
+  }
+
+  html[data-motion='full'] .parallasse {
+    animation: parallasse linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+
+  /* Barra di avanzamento della pagina nell'header */
+  html[data-motion='full'] .barra-pagina {
+    animation: avanzamento linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Riduzione del movimento: CSS di sicurezza                           */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-motion='reduce'] *,
+html[data-motion='reduce'] *::before,
+html[data-motion='reduce'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* View Transitions tra pagine (miglioramento progressivo)             */
+/* ------------------------------------------------------------------ */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: 0.35s var(--ease-casa) both vt-esci;
+}
+
+::view-transition-new(root) {
+  animation: 0.42s var(--ease-casa) both vt-entra;
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.42s;
+  animation-timing-function: var(--ease-casa);
+}
+
+@keyframes vt-esci {
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes vt-entra {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+html[data-motion='reduce']::view-transition-group(*),
+html[data-motion='reduce']::view-transition-old(*),
+html[data-motion='reduce']::view-transition-new(*) {
+  animation: none !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cuore "La mia lista" e coriandoli                                   */
+/* ------------------------------------------------------------------ */
+.cuore[aria-pressed='true'] {
+  background: var(--color-pomodoro-700);
+  border-color: var(--color-pomodoro-700);
+  color: var(--color-carta);
+}
+
+.cuore[aria-pressed='true'] svg {
+  fill: currentColor;
+}
+
+.cuore--pop svg {
+  animation: var(--animate-pop);
+}
+
+.coriandolo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: coriandolo 0.7s var(--ease-casa) forwards;
+}
+
+@keyframes coriandolo {
+  from {
+    transform: translate(0, 0) rotate(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(0.4);
+    opacity: 0;
+  }
+}
+
+/* Rete di sicurezza: se le animazioni non partono, gli stati iniziali nascosti decadono. */
+html.motion-ko [data-stato-iniziale] {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+  visibility: visible !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cursore personalizzato (creato da scripts/motion/cursor.ts)         */
+/* ------------------------------------------------------------------ */
+.cursore {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.cursore--visibile {
+  opacity: 1;
+}
+
+.cursore__disco {
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--color-inchiostro);
+  transition:
+    transform 0.35s var(--ease-casa),
+    opacity 0.2s;
+}
+
+.cursore--link .cursore__disco {
+  transform: scale(3.4);
+  background: var(--color-carta);
+  mix-blend-mode: difference;
+}
+
+.cursore--link {
+  mix-blend-mode: difference;
+}
+
+.cursore--testo .cursore__disco {
+  opacity: 0;
+}
+
+.cursore__etichetta {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: var(--color-inchiostro);
+  color: var(--color-carta);
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+  scale: 0;
+  transition: scale 0.35s var(--ease-casa);
+}
+
+.cursore--pillola .cursore__etichetta {
+  scale: 1;
+}
+
+.cursore--pillola .cursore__disco {
+  opacity: 0;
+}
+
+/* Manifesto, fallback GSAP: l'adesivo reale sostituisce il pseudo-elemento */
+.parola--js::before {
+  display: none;
+}

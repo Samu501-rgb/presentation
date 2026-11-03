@@ -1,0 +1,36 @@
+---
+/** Card di un articolo in offerta: bollino, prezzo barrato, tilt leggero su hover. */
+import Oggetto from './Oggetto.astro';
+import Badge from './Badge.astro';
+import PriceTag from './PriceTag.astro';
+import type { NomeOggetto } from '../data/oggetti';
+
+interface Props {
+  nome: string;
+  illustrazione: NomeOggetto;
+  colore: string;
+  prezzo?: string;
+  prezzoPrima?: string;
+  nota?: string;
+  href?: string;
+}
+const { nome, illustrazione, colore, prezzo, prezzoPrima, nota, href } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<li class="offerta-card" data-offerta-card>
+  <Tag
+    href={href}
+    class="offerta-card__corpo card relative block h-full bg-carta p-5 ring-2 ring-inchiostro"
+    data-tilt
+    data-cursor={href ? 'Guarda' : undefined}
+  >
+    <div class="relative grid aspect-square place-items-center rounded-2xl bg-mare">
+      <Oggetto nome={illustrazione} colore={colore} class="w-[60%]" dimensione={220} />
+      <Badge tipo="offerta" class="absolute -right-3 -top-3 w-20 text-base" />
+    </div>
+    <h3 class="mt-5 text-xl font-bold tracking-tight">{nome}</h3>
+    {nota && <p class="mt-1 text-sm text-grafite">{nota}</p>}
+    <PriceTag prezzo={prezzo} prezzoPrima={prezzoPrima} class="mt-4 text-base" />
+  </Tag>
+</li>

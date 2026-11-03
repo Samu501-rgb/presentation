@@ -1,0 +1,12 @@
+{
+  "nome": "Presa multipla",
+  "reparto": "ferramenta-ed-elettricita",
+  "descrizione": "Più prese dove ne serve una sola.",
+  "colore": "giallo",
+  "illustrazione": "presa",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

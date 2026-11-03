@@ -1,0 +1,12 @@
+{
+  "nome": "Spugne abrasive",
+  "reparto": "pulizia-e-detersivi",
+  "descrizione": "Le spugne per i piatti e le pentole.",
+  "colore": "giallo",
+  "illustrazione": "spugna",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": true,
+  "esempio": true
+}

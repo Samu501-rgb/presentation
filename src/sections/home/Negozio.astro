@@ -1,0 +1,69 @@
+---
+/**
+ * Il negozio: mini-mappa illustrata di Latina Est, indirizzo, orari in HTML,
+ * parcheggio, mappa reale click-to-load, "Indicazioni" e "Lascia una recensione".
+ * Sfondo bonifica (testo carta 7.0:1).
+ */
+import { Icon } from 'astro-icon/components';
+import MappaQuartiere from '../../components/MappaQuartiere.astro';
+import MapaClickToLoad from '../../components/MapaClickToLoad.astro';
+import Orari from '../../components/Orari.astro';
+import { negozio, indirizzoCompleto, linkIndicazioni, confermato } from '../../data/negozio';
+
+interface Props {
+  livelloTitolo?: 'h2' | 'h1';
+}
+const { livelloTitolo = 'h2' } = Astro.props;
+const Titolo = livelloTitolo;
+const recensione = confermato(negozio.social.recensioneGoogle) ?? linkIndicazioni();
+---
+
+<section
+  class="negozio su-scuro bg-bonifica py-24 text-carta md:py-32"
+  aria-labelledby="negozio-titolo"
+  data-negozio
+  id="dove-siamo"
+>
+  <div class="contenitore griglia gap-y-14">
+    <div class="col-span-4 md:col-span-5">
+      <p class="occhiello mb-4 flex items-center gap-2">
+        <span class="inline-block size-2.5 rounded-full bg-limone" aria-hidden="true"></span>Il
+        negozio
+      </p>
+      <Titolo id="negozio-titolo" class="titolo-2">
+        Siamo a Latina Est, proprio di fronte alla farmacia.
+      </Titolo>
+      <p class="mt-6 text-lg">
+        {indirizzoCompleto()}. Parcheggio: {negozio.parcheggio}. Passa quando vuoi.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={linkIndicazioni()} class="pillola pillola--limone" target="_blank" rel="noopener">
+          <Icon name="lucide:navigation" class="icona size-5" aria-hidden="true" />
+          <span>Indicazioni</span>
+          <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+        </a>
+        <a href={recensione} class="pillola pillola--vuota" target="_blank" rel="noopener">
+          <Icon name="lucide:star" class="icona size-5" aria-hidden="true" />
+          <span>Lascia una recensione</span>
+          <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+        </a>
+      </div>
+      <Orari class="mt-12 max-w-md" id="orari-negozio" />
+    </div>
+
+    <div class="col-span-4 md:col-span-6 md:col-start-7">
+      <MappaQuartiere class="card overflow-hidden text-carta" />
+      <MapaClickToLoad class="mt-6" />
+    </div>
+  </div>
+</section>
+
+<script>
+  import { registra } from '../../scripts/motion/setup';
+  registra({
+    nome: 'negozio',
+    carica: () => import('../../scripts/motion/negozio'),
+    quando: 'vicino',
+    el: '[data-negozio]',
+  });
+</script>

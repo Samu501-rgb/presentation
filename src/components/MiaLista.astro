@@ -1,0 +1,116 @@
+---
+/**
+ * "La mia lista": i prodotti salvati col cuore (localStorage), con quantità,
+ * da inviare in un clic su WhatsApp come prenotazione da ritirare.
+ */
+import { Icon } from 'astro-icon/components';
+---
+
+<div class="mia-lista" data-mia-lista>
+  <noscript>
+    <p class="rounded-2xl bg-argilla p-5">
+      Per usare “La mia lista” serve JavaScript. Puoi sempre scriverci su WhatsApp.
+    </p>
+  </noscript>
+  <p class="rounded-2xl bg-argilla p-5" data-lista-vuota hidden>
+    La tua lista è vuota. Tocca il cuore
+    <Icon name="lucide:heart" class="icona inline size-5 align-[-4px]" aria-hidden="true" />
+    sui prodotti per aggiungerli, poi torna qui e mandaci la lista su WhatsApp.
+    <a href="/reparti" class="link">
+      Vai allo scaffale
+    </a>
+    .
+  </p>
+  <div data-lista-piena hidden>
+    <ul
+      class="divide-y-2 divide-dashed divide-inchiostro/30 rounded-2xl bg-carta ring-2 ring-inchiostro"
+      data-lista-elenco
+    ></ul>
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+      <a class="pillola pillola--pomodoro" target="_blank" rel="noopener" data-lista-invia>
+        <Icon name="lucide:message-circle" class="icona size-5" aria-hidden="true" />
+        <span>Invia la lista su WhatsApp</span>
+        <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+      </a>
+      <button type="button" class="link-anim tocco font-semibold" data-lista-svuota>
+        Svuota la lista
+      </button>
+    </div>
+  </div>
+  <template data-lista-modello>
+    <li class="flex flex-wrap items-center justify-between gap-3 p-4">
+      <a class="font-semibold link-anim" data-voce-nome></a>
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          class="tocco grid size-11 place-items-center rounded-full border-2 border-inchiostro"
+          data-voce-meno
+        >
+          <span aria-hidden="true">−</span>
+          <span class="visualmente-nascosto">Diminuisci quantità</span>
+        </button>
+        <span class="tabular w-8 text-center font-bold" data-voce-q aria-live="polite"></span>
+        <button
+          type="button"
+          class="tocco grid size-11 place-items-center rounded-full border-2 border-inchiostro"
+          data-voce-piu
+        >
+          <span aria-hidden="true">+</span>
+          <span class="visualmente-nascosto">Aumenta quantità</span>
+        </button>
+        <button
+          type="button"
+          class="tocco ml-2 grid size-11 place-items-center rounded-full bg-inchiostro text-carta"
+          data-voce-togli
+        >
+          <Icon name="lucide:trash-2" class="icona size-5" aria-hidden="true" />
+          <span class="visualmente-nascosto" data-voce-togli-et>
+            Togli
+          </span>
+        </button>
+      </div>
+    </li>
+  </template>
+</div>
+
+<script>
+  import { leggi, rimuovi, imposta, svuota, alCambio, messaggioLista } from '../scripts/lista';
+  import { linkWhatsApp } from '../data/negozio';
+
+  const box = document.querySelector<HTMLElement>('[data-mia-lista]');
+  if (box) {
+    const vuota = box.querySelector<HTMLElement>('[data-lista-vuota]')!;
+    const piena = box.querySelector<HTMLElement>('[data-lista-piena]')!;
+    const elenco = box.querySelector<HTMLElement>('[data-lista-elenco]')!;
+    const modello = box.querySelector<HTMLTemplateElement>('[data-lista-modello]')!;
+    const invia = box.querySelector<HTMLAnchorElement>('[data-lista-invia]')!;
+
+    const disegna = () => {
+      const lista = leggi();
+      vuota.hidden = lista.length > 0;
+      piena.hidden = lista.length === 0;
+      elenco.replaceChildren(
+        ...lista.map((v) => {
+          const li = modello.content.firstElementChild!.cloneNode(true) as HTMLElement;
+          const a = li.querySelector<HTMLAnchorElement>('[data-voce-nome]')!;
+          a.textContent = v.nome;
+          a.href = `/prodotti/${v.slug}`;
+          li.querySelector('[data-voce-q]')!.textContent = String(v.quantità ?? 1);
+          li.querySelector('[data-voce-togli-et]')!.textContent = `Togli ${v.nome}`;
+          li.querySelector('[data-voce-meno]')!.addEventListener('click', () =>
+            imposta(v.slug, (v.quantità ?? 1) - 1),
+          );
+          li.querySelector('[data-voce-piu]')!.addEventListener('click', () =>
+            imposta(v.slug, (v.quantità ?? 1) + 1),
+          );
+          li.querySelector('[data-voce-togli]')!.addEventListener('click', () => rimuovi(v.slug));
+          return li;
+        }),
+      );
+      invia.href = linkWhatsApp(messaggioLista(lista));
+    };
+    box.querySelector('[data-lista-svuota]')?.addEventListener('click', () => svuota());
+    alCambio(disegna);
+    disegna();
+  }
+</script>

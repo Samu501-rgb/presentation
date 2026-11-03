@@ -1,0 +1,104 @@
+---
+/** Card prodotto: usata in scaffale, reparti, correlati. */
+import type { Prodotto } from '../data/catalogo';
+import Oggetto from './Oggetto.astro';
+import Badge from './Badge.astro';
+import PriceTag from './PriceTag.astro';
+import CuoreLista from './CuoreLista.astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  prodotto: Prodotto;
+  nomeReparto?: string;
+  /** Aggiunge view-transition-name (solo dove il prodotto compare una volta). */
+  transizione?: boolean;
+  titolo?: 'h2' | 'h3';
+  class?: string;
+  vistaRapida?: boolean;
+}
+const {
+  prodotto,
+  nomeReparto,
+  transizione = false,
+  titolo = 'h3',
+  class: classe,
+  vistaRapida = false,
+} = Astro.props;
+const p = prodotto.data;
+const Titolo = titolo;
+const foto = p.immagini[0];
+---
+
+<article
+  class:list={['prodotto-card group relative flex flex-col', classe]}
+  data-prodotto
+  data-slug={prodotto.id}
+  data-reparto={p.reparto.id}
+  data-colore={p.colore}
+  data-offerta={p.inOfferta ? '1' : '0'}
+  data-nuovo={p.nuovo ? '1' : '0'}
+  data-nome={p.nome}
+>
+  <a
+    href={`/prodotti/${prodotto.id}`}
+    class="block rounded-[var(--radius-card)]"
+    data-cursor="Guarda"
+  >
+    <div
+      class="prodotto-card__immagine card relative grid aspect-square place-items-center overflow-hidden bg-argilla transition-colors duration-500"
+      style={transizione ? `view-transition-name: p-${prodotto.id}` : undefined}
+      data-immagine
+    >
+      {foto ? (
+        <Image
+          src={foto.src}
+          alt=""
+          width={600}
+          height={600}
+          loading="lazy"
+          decoding="async"
+          class="size-full object-cover"
+        />
+      ) : (
+        <Oggetto
+          nome={p.illustrazione}
+          colore={p.colore}
+          class="prodotto-card__oggetto w-[62%] transition-transform duration-700 ease-[var(--ease-casa)]"
+          dimensione={240}
+        />
+      )}
+    </div>
+    <Titolo class="mt-4 text-xl font-bold tracking-tight leading-tight">{p.nome}</Titolo>
+    {nomeReparto && <p class="mt-1 text-sm text-grafite">{nomeReparto}</p>}
+  </a>
+  <div class="pointer-events-none absolute left-3 top-3 flex gap-1">
+    {p.inOfferta && <Badge tipo="offerta" class="w-[3.75rem] text-xs" />}
+    {p.nuovo && <Badge tipo="nuovo" class="w-[3.75rem] text-xs" />}
+  </div>
+  <CuoreLista slug={prodotto.id} nome={p.nome} codice={p.codice} class="absolute right-3 top-3" />
+  <div class="mt-3 flex flex-wrap items-center gap-3">
+    <PriceTag prezzo={p.prezzo} />
+    {vistaRapida && (
+      <button
+        type="button"
+        class="link-anim tocco text-sm font-semibold"
+        data-vista-rapida={prodotto.id}
+        hidden
+      >
+        Vista rapida<span class="visualmente-nascosto"> di {p.nome}</span>
+      </button>
+    )}
+  </div>
+</article>
+
+<style>
+  .prodotto-card:hover .prodotto-card__immagine,
+  .prodotto-card:focus-within .prodotto-card__immagine {
+    background-color: var(--color-limone);
+  }
+  @media (hover: hover) {
+    .prodotto-card:hover .prodotto-card__oggetto {
+      transform: rotate(-6deg) translateY(-6%) scale(1.04);
+    }
+  }
+</style>

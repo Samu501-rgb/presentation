@@ -1,0 +1,20 @@
+---
+/** Bollino rotondo tipo adesivo ("Nuovo", "Offerta"). */
+interface Props {
+  tipo?: 'nuovo' | 'offerta' | 'libero';
+  class?: string;
+}
+const { tipo = 'libero', class: classe } = Astro.props;
+const stili = {
+  nuovo: 'bg-mare text-inchiostro',
+  offerta: 'bg-limone text-inchiostro',
+  libero: 'bg-limone text-inchiostro',
+};
+---
+
+<span
+  class:list={['bollino text-[0.8125rem] w-16 rotate-[-8deg]', stili[tipo], classe]}
+  data-bollino
+>
+  <slot>{tipo === 'nuovo' ? 'Nuovo' : 'Offerta'}</slot>
+</span>

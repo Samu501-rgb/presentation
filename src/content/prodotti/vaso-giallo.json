@@ -1,0 +1,12 @@
+{
+  "nome": "Vaso giallo",
+  "reparto": "piccoli-regali-e-decorazione",
+  "descrizione": "Un vaso allegro, anche da regalare.",
+  "colore": "giallo",
+  "illustrazione": "vaso",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

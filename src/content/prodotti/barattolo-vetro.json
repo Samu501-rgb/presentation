@@ -1,0 +1,12 @@
+{
+  "nome": "Barattolo con coperchio",
+  "reparto": "ordine-e-contenitori",
+  "descrizione": "Per pasta, legumi, biscotti e tutto ciò che va in dispensa.",
+  "colore": "azzurro",
+  "illustrazione": "barattolo",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

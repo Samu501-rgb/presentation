@@ -1,0 +1,12 @@
+{
+  "nome": "Flacone nebulizzatore",
+  "reparto": "pulizia-e-detersivi",
+  "descrizione": "Il flacone spray da riempire come vuoi.",
+  "colore": "azzurro",
+  "illustrazione": "flacone",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

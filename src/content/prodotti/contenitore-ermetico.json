@@ -1,0 +1,12 @@
+{
+  "nome": "Contenitore ermetico",
+  "reparto": "ordine-e-contenitori",
+  "descrizione": "Per conservare gli avanzi in frigo.",
+  "colore": "verde",
+  "illustrazione": "contenitore",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

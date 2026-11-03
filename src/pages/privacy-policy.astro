@@ -1,0 +1,107 @@
+---
+/**
+ * Informativa privacy (art. 13 GDPR). BOZZA: il testo definitivo va validato
+ * da un consulente o generato con un servizio professionale (es. iubenda).
+ */
+import Legale from '../layouts/Legale.astro';
+import { negozio, indirizzoCompleto } from '../data/negozio';
+---
+
+<Legale
+  titolo="Privacy policy – Gino Casa"
+  h1="Informativa privacy"
+  descrizione="Come Gino Casa tratta i dati personali di chi visita il sito e invia una richiesta."
+  percorso="/privacy-policy"
+>
+  <p>
+    Questa informativa spiega come trattiamo i tuoi dati quando visiti il sito di {negozio.nome} o
+    ci invii una richiesta, ai sensi dell’art. 13 del Regolamento (UE) 2016/679 (GDPR).
+  </p>
+
+  <h2>Titolare del trattamento</h2>
+  <p>
+    {negozio.ragioneSociale} – {indirizzoCompleto()} – P.IVA {negozio.piva} – email {negozio.email}.
+  </p>
+
+  <h2>Quali dati trattiamo</h2>
+  <ul>
+    <li>
+      <strong>Dati di navigazione</strong>: dati tecnici che i sistemi del servizio di hosting
+      (Cloudflare Pages) registrano per far funzionare il sito e proteggerlo, come indirizzo IP,
+      data e ora della richiesta, pagina richiesta e tipo di browser.
+    </li>
+    <li>
+      <strong>Dati che ci invii tu</strong>: con il modulo “Te lo troviamo”, il modulo contatti, la
+      lista “La mia lista” o i pulsanti WhatsApp ci comunichi nome, telefono, il testo della
+      richiesta ed eventuali foto.
+    </li>
+  </ul>
+  <p>
+    Il sito non usa cookie di profilazione né strumenti di statistica o di tracciamento di terze
+    parti.
+  </p>
+
+  <h2>Perché li trattiamo e su quale base giuridica</h2>
+  <ul>
+    <li>
+      Rispondere alla tua richiesta e mettere da parte gli articoli che prenoti: esecuzione di
+      misure richieste da te (art. 6, par. 1, lett. b GDPR) e tuo consenso espresso con la casella
+      del modulo (art. 6, par. 1, lett. a).
+    </li>
+    <li>
+      Garantire la sicurezza e il funzionamento del sito: legittimo interesse del titolare (art. 6,
+      par. 1, lett. f).
+    </li>
+    <li>Adempiere a obblighi di legge, se necessario (art. 6, par. 1, lett. c).</li>
+  </ul>
+
+  <h2>Come avviene l’invio delle richieste</h2>
+  <p>
+    Se scegli “Invia su WhatsApp”, il sito si limita a preparare il testo del messaggio: sei tu a
+    inviarlo dalla tua app WhatsApp. Il messaggio viene quindi trattato anche da WhatsApp Ireland
+    Ltd. (gruppo Meta) secondo la sua informativa. Se scegli l’invio via email, i dati del modulo
+    vengono trasmessi al nostro indirizzo email tramite il servizio [SERVIZIO_INVIO_EMAIL].
+  </p>
+
+  <h2>Per quanto tempo li conserviamo</h2>
+  <p>
+    Le richieste vengono conservate per il tempo necessario a gestirle e comunque non oltre
+    [TEMPO_CONSERVAZIONE_RICHIESTE]. I dati di navigazione vengono conservati dal fornitore di
+    hosting per il tempo indicato nella sua informativa ([TEMPO_CONSERVAZIONE_LOG]).
+  </p>
+
+  <h2>Chi può ricevere i dati</h2>
+  <p>
+    I dati non vengono diffusi. Possono riceverli, solo per le finalità indicate: il fornitore di
+    hosting (Cloudflare, Inc.), WhatsApp/Meta se scegli di scriverci su WhatsApp, Google se scegli
+    di caricare la mappa, il fornitore del servizio email [SERVIZIO_INVIO_EMAIL]. Alcuni di questi
+    fornitori possono trattare dati fuori dall’Unione europea sulla base di garanzie adeguate
+    (decisione di adeguatezza EU-US Data Privacy Framework o clausole contrattuali standard).
+  </p>
+
+  <h2>Mappa e contenuti di terze parti</h2>
+  <p>
+    La mappa di Google viene caricata solo se premi “Carica la mappa”: prima di quel clic il sito
+    non contatta Google. Caricando la mappa accetti i cookie di Google, regolati dalla sua
+    informativa.
+  </p>
+
+  <h2>I tuoi diritti</h2>
+  <p>
+    Puoi chiedere in ogni momento l’accesso ai tuoi dati, la rettifica, la cancellazione, la
+    limitazione del trattamento, la portabilità e opporti al trattamento (artt. 15–22 GDPR), e
+    revocare il consenso senza pregiudicare quanto fatto prima della revoca. Scrivi a{' '}
+    {negozio.email}. Hai anche il diritto di proporre reclamo al Garante per la protezione dei dati
+    personali (
+    <a href="https://www.garanteprivacy.it" rel="noopener" target="_blank">
+      garanteprivacy.it
+    </a>
+    ).
+  </p>
+
+  <h2>Dati sul tuo dispositivo</h2>
+  <p>
+    “La mia lista” e la preferenza sulle animazioni sono salvate solo nel tuo browser e non ci
+    vengono inviate. I dettagli sono nella <a href="/cookie-policy">cookie policy</a>.
+  </p>
+</Legale>

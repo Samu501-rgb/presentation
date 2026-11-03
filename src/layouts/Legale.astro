@@ -1,0 +1,28 @@
+---
+/** Layout delle pagine legali: titolo, data di aggiornamento, testo lungo. */
+import Base from './Base.astro';
+
+interface Props {
+  titolo: string;
+  h1: string;
+  descrizione: string;
+  percorso: string;
+}
+const { titolo, h1, descrizione, percorso } = Astro.props;
+const briciole = [
+  { nome: 'Home', href: '/' },
+  { nome: h1, href: percorso },
+];
+---
+
+<Base titolo={titolo} descrizione={descrizione} og="home" briciole={briciole}>
+  <article class="contenitore py-10 md:py-16" aria-labelledby="legale-titolo">
+    <h1 id="legale-titolo" class="titolo-2">
+      {h1}
+    </h1>
+    <p class="mt-4 text-grafite">Ultimo aggiornamento: [DATA_AGGIORNAMENTO]</p>
+    <div class="testo-lungo mt-10 text-lg">
+      <slot />
+    </div>
+  </article>
+</Base>

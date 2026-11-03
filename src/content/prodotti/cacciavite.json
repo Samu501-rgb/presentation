@@ -1,0 +1,12 @@
+{
+  "nome": "Cacciavite",
+  "reparto": "ferramenta-ed-elettricita",
+  "descrizione": "Il cacciavite per le piccole riparazioni.",
+  "colore": "giallo",
+  "illustrazione": "cacciavite",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

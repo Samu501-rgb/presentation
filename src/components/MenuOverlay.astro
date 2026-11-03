@@ -1,0 +1,188 @@
+---
+/**
+ * Menu mobile a tutto schermo: si apre con clip-path dall'angolo del pulsante,
+ * le voci entrano con mask-reveal sfalsato. Focus trap, Esc, ritorno del focus.
+ * Le transizioni sono CSS: con "Animazioni off" o reduced motion diventano istantanee.
+ */
+import { Icon } from 'astro-icon/components';
+import { NAVIGAZIONE } from '../data/navigazione';
+import { linkWhatsApp, hrefTelefono, telefonoLeggibile } from '../data/negozio';
+import MotionToggle from './MotionToggle.astro';
+
+const tel = hrefTelefono();
+---
+
+<div
+  id="menu-mobile"
+  class="menu su-scuro fixed inset-0 z-[60] flex flex-col bg-inchiostro text-carta"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu"
+  data-menu
+  data-lenis-prevent
+  hidden
+>
+  <div class="contenitore flex h-[5.5rem] items-center justify-between">
+    <span class="font-display text-2xl font-extrabold tracking-tight">Menu</span>
+    <button
+      type="button"
+      class="tocco grid size-12 place-items-center rounded-full bg-carta text-inchiostro"
+      data-menu-chiudi
+    >
+      <Icon name="lucide:x" class="icona size-6" aria-hidden="true" />
+      <span class="visualmente-nascosto">Chiudi il menu</span>
+    </button>
+  </div>
+  <nav aria-label="Menu mobile" class="contenitore flex-1 overflow-y-auto pb-8">
+    <ul class="flex flex-col gap-1">
+      <li class="menu__voce">
+        <a href="/" class="menu__link">
+          <span>Home</span>
+        </a>
+      </li>
+      {NAVIGAZIONE.map((v) => (
+        <li class="menu__voce">
+          <a href={v.href} class="menu__link">
+            <span>{v.testo}</span>
+          </a>
+        </li>
+      ))}
+      <li class="menu__voce">
+        <a href="/te-lo-troviamo#lista" class="menu__link">
+          <span>La mia lista</span>
+        </a>
+      </li>
+    </ul>
+    <div class="menu__voce mt-10 flex flex-col items-start gap-4">
+      <a href={linkWhatsApp()} class="pillola pillola--limone" target="_blank" rel="noopener">
+        <Icon name="lucide:message-circle" class="icona size-5" aria-hidden="true" />
+        <span>Scrivici su WhatsApp</span>
+        <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+      </a>
+      {tel && (
+        <a href={tel} class="link-anim font-semibold">
+          Chiama {telefonoLeggibile()}
+        </a>
+      )}
+      <MotionToggle />
+    </div>
+  </nav>
+</div>
+
+<style>
+  .menu {
+    clip-path: circle(0% at var(--mx, 90%) var(--my, 2.5rem));
+    transition: clip-path 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .menu.menu--aperto {
+    clip-path: circle(150% at var(--mx, 90%) var(--my, 2.5rem));
+  }
+  .menu__link {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.15em;
+    font-family: var(--font-display);
+    font-weight: 750;
+    font-size: clamp(2.25rem, 10vw, 4rem);
+    letter-spacing: -0.035em;
+    line-height: 1;
+    text-decoration: none;
+  }
+  .menu__link span {
+    display: inline-block;
+    transform: translateY(105%);
+    transition: transform 0.7s var(--ease-casa);
+    transition-delay: calc(0.15s + var(--i, 0) * 0.06s);
+  }
+  .menu--aperto .menu__link span {
+    transform: none;
+  }
+  .menu__link[aria-current='page'] span {
+    color: var(--color-limone);
+  }
+</style>
+
+<script>
+  // Apertura/chiusura del menu mobile, con focus trap ed Esc.
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const apri = document.querySelector<HTMLButtonElement>('[data-menu-apri]');
+  const chiudi = menu?.querySelector<HTMLButtonElement>('[data-menu-chiudi]');
+  const etichetta = apri?.querySelector('[data-menu-etichetta]');
+
+  if (menu && apri && chiudi) {
+    apri.hidden = false;
+    const html = document.documentElement;
+    const resto = () =>
+      Array.from(document.body.children).filter(
+        (el) => el !== menu && el.tagName !== 'SCRIPT',
+      ) as HTMLElement[];
+    menu
+      .querySelectorAll<HTMLElement>('.menu__link span')
+      .forEach((s, i) => s.style.setProperty('--i', String(i)));
+
+    const focabili = () =>
+      Array.from(menu.querySelectorAll<HTMLElement>('a[href], button:not([hidden])')).filter(
+        (el) => !el.closest('[hidden]'),
+      );
+
+    const apriMenu = () => {
+      const r = apri.getBoundingClientRect();
+      menu.style.setProperty('--mx', `${r.left + r.width / 2}px`);
+      menu.style.setProperty('--my', `${r.top + r.height / 2}px`);
+      menu.hidden = false;
+      // forza il reflow prima della transizione
+      void menu.offsetWidth;
+      menu.classList.add('menu--aperto');
+      html.classList.add('menu-aperto');
+      apri.setAttribute('aria-expanded', 'true');
+      if (etichetta) etichetta.textContent = 'Chiudi il menu';
+      resto().forEach((el) => el.setAttribute('inert', ''));
+      window.dispatchEvent(new CustomEvent('gc:scroll-blocco', { detail: true }));
+      html.style.overflow = 'hidden';
+      requestAnimationFrame(() => chiudi.focus());
+    };
+
+    const chiudiMenu = () => {
+      menu.classList.remove('menu--aperto');
+      html.classList.remove('menu-aperto');
+      apri.setAttribute('aria-expanded', 'false');
+      if (etichetta) etichetta.textContent = 'Apri il menu';
+      resto().forEach((el) => el.removeAttribute('inert'));
+      html.style.overflow = '';
+      window.dispatchEvent(new CustomEvent('gc:scroll-blocco', { detail: false }));
+      const durata = parseFloat(getComputedStyle(menu).transitionDuration) * 1000 || 0;
+      window.setTimeout(() => {
+        if (!menu.classList.contains('menu--aperto')) menu.hidden = true;
+      }, durata);
+      apri.focus();
+    };
+
+    apri.addEventListener('click', () => (menu.hidden ? apriMenu() : chiudiMenu()));
+    chiudi.addEventListener('click', chiudiMenu);
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) chiudiMenu();
+    });
+    menu.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        chiudiMenu();
+      }
+      if (e.key === 'Tab') {
+        const els = focabili();
+        const primo = els[0];
+        const ultimo = els[els.length - 1];
+        if (e.shiftKey && document.activeElement === primo) {
+          e.preventDefault();
+          ultimo.focus();
+        } else if (!e.shiftKey && document.activeElement === ultimo) {
+          e.preventDefault();
+          primo.focus();
+        }
+      }
+    });
+    // Il menu esiste solo sotto 1024px: se si allarga la finestra, si chiude.
+    matchMedia('(min-width: 1024px)').addEventListener('change', (m) => {
+      if (m.matches && !menu.hidden) chiudiMenu();
+    });
+  }
+</script>

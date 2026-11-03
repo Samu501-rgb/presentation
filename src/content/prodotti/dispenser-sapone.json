@@ -1,0 +1,12 @@
+{
+  "nome": "Dispenser per sapone",
+  "reparto": "bagno",
+  "descrizione": "Il dispenser per il sapone liquido.",
+  "colore": "giallo",
+  "illustrazione": "dispenser",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

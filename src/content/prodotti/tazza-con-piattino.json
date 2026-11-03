@@ -1,0 +1,12 @@
+{
+  "nome": "Tazza con piattino",
+  "reparto": "tavola",
+  "descrizione": "Per il caffè o il tè con chi passa a trovarti.",
+  "colore": "giallo",
+  "illustrazione": "tazza",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": true,
+  "inOfferta": false,
+  "esempio": true
+}

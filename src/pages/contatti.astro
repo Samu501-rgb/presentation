@@ -1,0 +1,121 @@
+---
+/** /contatti — NAP, WhatsApp, telefono cliccabile, email, mappa click-to-load e form breve. */
+import { Icon } from 'astro-icon/components';
+import Base from '../layouts/Base.astro';
+import MapaClickToLoad from '../components/MapaClickToLoad.astro';
+import Orari from '../components/Orari.astro';
+import FormRichiesta from '../components/FormRichiesta.astro';
+import {
+  negozio,
+  indirizzoCompleto,
+  telefonoLeggibile,
+  hrefTelefono,
+  hrefEmail,
+  linkWhatsApp,
+  linkIndicazioni,
+} from '../data/negozio';
+
+const tel = hrefTelefono();
+const mail = hrefEmail();
+const briciole = [
+  { nome: 'Home', href: '/' },
+  { nome: 'Contatti', href: '/contatti' },
+];
+---
+
+<Base
+  titolo="Contatti – Gino Casa, bazar e casalinghi a Latina Est"
+  descrizione="Indirizzo, telefono, WhatsApp, email e orari di Gino Casa, bazar e casalinghi a Latina Est, di fronte alla farmacia."
+  og="contatti"
+  briciole={briciole}
+>
+  <section class="contenitore py-10 md:py-16" aria-labelledby="contatti-h1">
+    <h1 id="contatti-h1" class="titolo-1 !text-[clamp(3rem,9vw,8rem)]">
+      Scrivici, chiamaci, passa.
+    </h1>
+  </section>
+
+  <section class="contenitore griglia gap-y-12 pb-16" aria-label="Recapiti">
+    <div class="col-span-4 md:col-span-5">
+      <address class="text-lg not-italic leading-relaxed">
+        <strong class="font-display text-2xl">{negozio.nome}</strong>
+        <br />
+        {indirizzoCompleto()}
+        <br />
+        <span class="text-grafite">Di fronte alla farmacia di Latina Est</span>
+      </address>
+      <ul class="mt-8 space-y-3 text-lg">
+        <li>
+          <a
+            href={linkWhatsApp()}
+            class="link-anim inline-flex items-center gap-3 font-semibold"
+            target="_blank"
+            rel="noopener"
+          >
+            <Icon name="lucide:message-circle" class="icona size-6" aria-hidden="true" />
+            WhatsApp {telefonoLeggibile(negozio.whatsapp)}
+            <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+          </a>
+        </li>
+        <li>
+          {tel ? (
+            <a href={tel} class="link-anim inline-flex items-center gap-3 font-semibold">
+              <Icon name="lucide:phone" class="icona size-6" aria-hidden="true" />
+              Tel. {telefonoLeggibile()}
+            </a>
+          ) : (
+            <span class="inline-flex items-center gap-3">
+              <Icon name="lucide:phone" class="icona size-6" aria-hidden="true" />
+              Tel. {telefonoLeggibile()}
+            </span>
+          )}
+        </li>
+        <li>
+          {mail ? (
+            <a href={mail} class="link-anim inline-flex items-center gap-3 font-semibold">
+              <Icon name="lucide:mail" class="icona size-6" aria-hidden="true" />
+              {negozio.email}
+            </a>
+          ) : (
+            <span class="inline-flex items-center gap-3">
+              <Icon name="lucide:mail" class="icona size-6" aria-hidden="true" />
+              {negozio.email}
+            </span>
+          )}
+        </li>
+        <li class="inline-flex items-center gap-3">
+          <Icon name="lucide:car" class="icona size-6" aria-hidden="true" />
+          Parcheggio: {negozio.parcheggio}
+        </li>
+      </ul>
+      <a href={linkIndicazioni()} class="pillola mt-8" target="_blank" rel="noopener">
+        <Icon name="lucide:navigation" class="icona size-5" aria-hidden="true" />
+        <span>Indicazioni</span>
+        <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+      </a>
+      <Orari class="mt-12 max-w-md" id="orari-contatti" />
+    </div>
+    <div class="col-span-4 md:col-span-7">
+      <MapaClickToLoad />
+    </div>
+  </section>
+
+  <section class="bg-mare py-16 md:py-24" aria-labelledby="form-contatti-titolo">
+    <div class="contenitore griglia gap-y-10">
+      <div class="col-span-4 md:col-span-4">
+        <h2 id="form-contatti-titolo" class="titolo-2">
+          Due righe e via.
+        </h2>
+        <p class="mt-5 text-lg">Scrivi il messaggio qui: lo apriamo su WhatsApp, tu premi invio.</p>
+      </div>
+      <div class="col-span-4 md:col-span-8">
+        <FormRichiesta
+          id="contatto"
+          tipo="contatto"
+          conQuantita={false}
+          etichettaCosa="Il tuo messaggio"
+        />
+      </div>
+    </div>
+  </section>
+</Base>

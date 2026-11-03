@@ -1,0 +1,12 @@
+{
+  "nome": "Moka 3 tazze",
+  "reparto": "cucina",
+  "descrizione": "La moka per il caffè di tutti i giorni.",
+  "colore": "rosso",
+  "illustrazione": "moka",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": true,
+  "esempio": true
+}

@@ -1,0 +1,12 @@
+{
+  "nome": "Bicchiere portaspazzolino",
+  "reparto": "bagno",
+  "descrizione": "Per spazzolini e dentifricio.",
+  "colore": "azzurro",
+  "illustrazione": "bicchiere",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

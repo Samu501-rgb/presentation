@@ -1,0 +1,12 @@
+{
+  "nome": "Cestino portaoggetti",
+  "reparto": "ordine-e-contenitori",
+  "descrizione": "Per mettere ordine su mensole e armadi.",
+  "colore": "giallo",
+  "illustrazione": "cestino",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

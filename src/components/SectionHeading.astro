@@ -1,0 +1,30 @@
+---
+/** Intestazione di sezione: occhiello + titolo + testo introduttivo. */
+interface Props {
+  occhiello?: string;
+  titolo: string;
+  livello?: 'h1' | 'h2';
+  id?: string;
+  class?: string;
+  centrato?: boolean;
+}
+const { occhiello, titolo, livello = 'h2', id, class: classe, centrato = false } = Astro.props;
+const Tag = livello;
+---
+
+<header class:list={['mb-10 md:mb-14', centrato && 'text-center mx-auto', classe]}>
+  {occhiello && (
+    <p class="occhiello mb-4 flex items-center gap-2" class:list={[centrato && 'justify-center']}>
+      <span class="inline-block size-2.5 rounded-full bg-pomodoro" aria-hidden="true"></span>
+      {occhiello}
+    </p>
+  )}
+  <Tag id={id} class={livello === 'h1' ? 'titolo-1' : 'titolo-2'} data-titolo-sezione>
+    {titolo}
+  </Tag>
+  {Astro.slots.has('default') && (
+    <div class="mt-6 max-w-[56ch] text-lg text-grafite" class:list={[centrato && 'mx-auto']}>
+      <slot />
+    </div>
+  )}
+</header>

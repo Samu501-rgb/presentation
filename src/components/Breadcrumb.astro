@@ -1,0 +1,31 @@
+---
+/** Briciole di pane visibili. Il JSON-LD BreadcrumbList è generato in Base.astro. */
+export interface Briciola {
+  nome: string;
+  href: string;
+}
+interface Props {
+  voci: Briciola[];
+  class?: string;
+}
+const { voci, class: classe } = Astro.props;
+---
+
+<nav aria-label="Percorso" class:list={['text-sm', classe]}>
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1">
+    {voci.map((v, i) => (
+      <li class="flex items-center gap-2">
+        {i > 0 && <span aria-hidden="true">/</span>}
+        {i === voci.length - 1 ? (
+          <span aria-current="page" class="font-semibold">
+            {v.nome}
+          </span>
+        ) : (
+          <a href={v.href} class="link-anim tocco inline-flex items-center">
+            {v.nome}
+          </a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

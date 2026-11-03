@@ -1,0 +1,213 @@
+---
+/**
+ * Header: si nasconde scorrendo giù, ricompare scorrendo su (transform), diventa
+ * compatto dopo 80px. Su mobile: hamburger → menu a tutto schermo (MenuOverlay).
+ */
+import { Icon } from 'astro-icon/components';
+import Logotipo from './Logotipo.astro';
+import MotionToggle from './MotionToggle.astro';
+import MagneticButton from './MagneticButton.astro';
+import { linkWhatsApp } from '../data/negozio';
+import { NAVIGAZIONE } from '../data/navigazione';
+
+const percorso = Astro.url.pathname.replace(/\/$/, '') || '/';
+const attivo = (href: string) =>
+  percorso === href || (href !== '/' && percorso.startsWith(href + '/'));
+---
+
+<header class="testata fixed inset-x-0 top-0 z-50" data-testata>
+  <div class="testata__barra-pagina barra-pagina" aria-hidden="true"></div>
+  <div class="contenitore">
+    <div class="testata__interno mt-3 flex h-16 items-center justify-between gap-4 rounded-full px-3 md:px-5">
+      <a
+        href="/"
+        class="testata__logo tocco inline-flex items-center rounded-full px-1"
+        aria-label="Gino Casa, vai alla home"
+      >
+        <Logotipo />
+      </a>
+
+      <nav aria-label="Principale" class="hidden lg:block">
+        <ul class="flex items-center gap-7 font-semibold">
+          {NAVIGAZIONE.map((v) => (
+            <li>
+              <a
+                href={v.href}
+                class="link-anim py-2"
+                aria-current={attivo(v.href) ? 'page' : undefined}
+              >
+                {v.testo}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-2 md:gap-3">
+        <a
+          href="/te-lo-troviamo#lista"
+          class="lista-link tocco relative inline-flex items-center gap-2 rounded-full px-2 font-semibold"
+          data-lista-link
+        >
+          <Icon name="lucide:heart" class="icona size-6" aria-hidden="true" />
+          <span class="hidden xl:inline">La mia lista</span>
+          <span class="visualmente-nascosto xl:hidden">La mia lista</span>
+          <span
+            class="lista-conteggio tabular grid h-6 min-w-6 place-items-center rounded-full bg-pomodoro-700 px-1.5 text-xs font-bold text-carta"
+            data-lista-conteggio
+            hidden
+          >
+            <span class="visualmente-nascosto">, oggetti: </span>
+            <span data-lista-numero>0</span>
+          </span>
+        </a>
+        <MotionToggle class="hidden lg:inline-flex" compatto />
+        <MagneticButton
+          href={linkWhatsApp()}
+          testo="WhatsApp"
+          variante="pomodoro"
+          icona="lucide:message-circle"
+          class="hidden md:inline-flex !min-h-11 !py-2 !px-4"
+          esterno
+        />
+        <a
+          href="#navigazione-footer"
+          class="tocco inline-flex items-center gap-2 rounded-full px-3 font-semibold lg:hidden"
+          data-menu-fallback
+        >
+          Menu
+        </a>
+        <button
+          type="button"
+          class="hamburger tocco relative grid size-12 place-items-center rounded-full bg-inchiostro text-carta lg:hidden"
+          aria-expanded="false"
+          aria-controls="menu-mobile"
+          data-menu-apri
+          hidden
+        >
+          <span class="visualmente-nascosto" data-menu-etichetta>
+            Apri il menu
+          </span>
+          <span class="hamburger__linee" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .testata {
+    transition: transform 0.5s var(--ease-casa);
+    view-transition-name: testata;
+  }
+  .testata--nascosta {
+    transform: translateY(-120%);
+  }
+  .testata__interno {
+    transition:
+      background-color 0.4s var(--ease-casa),
+      box-shadow 0.4s var(--ease-casa),
+      transform 0.4s var(--ease-casa);
+    transform-origin: top center;
+  }
+  .testata--compatta .testata__interno {
+    background: rgb(245 239 228 / 0.92);
+    box-shadow:
+      0 0 0 2px var(--color-inchiostro),
+      0 10px 30px -12px rgb(31 26 23 / 0.35);
+    backdrop-filter: blur(8px);
+    transform: translateY(-4px) scale(0.97);
+  }
+  .testata__logo {
+    view-transition-name: logo;
+  }
+  .barra-pagina {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--color-pomodoro);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .lista-conteggio.salta {
+    animation: var(--animate-pop);
+  }
+  /* Hamburger → X */
+  .hamburger__linee {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 14px;
+  }
+  .hamburger__linee span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.45s var(--ease-casa),
+      opacity 0.25s;
+  }
+  .hamburger__linee span:nth-child(1) {
+    top: 0;
+  }
+  .hamburger__linee span:nth-child(2) {
+    top: 6px;
+  }
+  .hamburger__linee span:nth-child(3) {
+    top: 12px;
+  }
+  .hamburger[aria-expanded='true'] .hamburger__linee span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .hamburger[aria-expanded='true'] .hamburger__linee span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .hamburger[aria-expanded='true'] .hamburger__linee span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+  html.js [data-menu-fallback] {
+    display: none;
+  }
+</style>
+
+<script>
+  // Header: nascondi/mostra in base al verso dello scroll, compatto dopo 80px.
+  const testata = document.querySelector<HTMLElement>('[data-testata]');
+  if (testata) {
+    let ultimo = window.scrollY;
+    let inCoda = false;
+    const aggiorna = () => {
+      inCoda = false;
+      const y = window.scrollY;
+      const menuAperto = document.documentElement.classList.contains('menu-aperto');
+      testata.classList.toggle('testata--compatta', y > 80);
+      // Non nascondere se il focus è nell'header (navigazione da tastiera).
+      const focusDentro = testata.contains(document.activeElement);
+      const giù = y > ultimo + 4;
+      const su = y < ultimo - 4;
+      if (giù && y > 160 && !menuAperto && !focusDentro) testata.classList.add('testata--nascosta');
+      else if (su || y <= 160) testata.classList.remove('testata--nascosta');
+      if (giù || su) ultimo = y;
+    };
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!inCoda) {
+          inCoda = true;
+          requestAnimationFrame(aggiorna);
+        }
+      },
+      { passive: true },
+    );
+    testata.addEventListener('focusin', () => testata.classList.remove('testata--nascosta'));
+    aggiorna();
+  }
+</script>

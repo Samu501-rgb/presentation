@@ -1,0 +1,50 @@
+---
+/** Cartellino prezzo ruotato di −3°. Senza prezzo mostra "Chiedi in negozio". */
+import { prezzoLeggibile } from '../data/catalogo';
+import { negozio } from '../data/negozio';
+
+interface Props {
+  prezzo?: number | string;
+  prezzoPrima?: string;
+  class?: string;
+}
+const { prezzo, prezzoPrima, class: classe } = Astro.props;
+const mostra = negozio.flag.mostraPrezzi && prezzo !== undefined;
+const testo = typeof prezzo === 'number' ? prezzoLeggibile(prezzo) : prezzo ? `€ ${prezzo}` : '';
+---
+
+<span class:list={['cartellino text-sm', classe]} data-cartellino>
+  {mostra ? (
+    <>
+      {prezzoPrima && (
+        <s class="prezzo-prima relative font-semibold text-grafite no-underline" data-barrato>
+          <span class="visualmente-nascosto">Prima</span>€ {prezzoPrima}
+        </s>
+      )}
+      <span>
+        {prezzoPrima && <span class="visualmente-nascosto">Ora</span>}
+        {testo}
+      </span>
+    </>
+  ) : (
+    <span>Chiedi in negozio</span>
+  )}
+</span>
+
+<style>
+  /* Linea che "taglia" il prezzo: disegnata con scaleX dall'animazione delle offerte. */
+  .prezzo-prima {
+    text-decoration: none;
+  }
+  .prezzo-prima::after {
+    content: '';
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    top: 50%;
+    height: 2px;
+    background: var(--color-pomodoro-700);
+    transform-origin: left center;
+    transform: rotate(-8deg) scaleX(var(--taglio, 1));
+  }
+</style>

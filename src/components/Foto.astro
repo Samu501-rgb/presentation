@@ -1,0 +1,65 @@
+---
+/**
+ * Foto responsive (AVIF/WebP + JPG di fallback) oppure segnaposto onesto con il
+ * rapporto finale già corretto: sostituire il segnaposto con la foto non genera CLS.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src?: ImageMetadata;
+  alt: string;
+  /** Descrizione dello scatto da fare, es. "FOTO: moka su sfondo limone, 4:5". */
+  segnaposto?: string;
+  /** Rapporto CSS, es. "4/5", "16/9". */
+  rapporto?: string;
+  sizes?: string;
+  prioritaria?: boolean;
+  class?: string;
+  style?: string;
+}
+const {
+  src,
+  alt,
+  segnaposto,
+  rapporto = '4/5',
+  sizes = '(min-width: 1024px) 33vw, 90vw',
+  prioritaria = false,
+  class: classe,
+  style,
+} = Astro.props;
+const [w, h] = rapporto.split('/').map(Number);
+const larghezza = 1200;
+const altezza = Math.round((larghezza * h) / w);
+---
+
+{src ? (
+  <div
+    class:list={['skeleton overflow-hidden', classe]}
+    style={`aspect-ratio:${rapporto};${style ?? ''}`}
+  >
+    <Picture
+      src={src}
+      alt={alt}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      widths={[480, 800, 1200, 1600, 2400].filter((x) => x <= src.width)}
+      sizes={sizes}
+      width={larghezza}
+      height={altezza}
+      loading={prioritaria ? 'eager' : 'lazy'}
+      decoding={prioritaria ? 'sync' : 'async'}
+      fetchpriority={prioritaria ? 'high' : undefined}
+      class="size-full object-cover"
+    />
+  </div>
+) : (
+  <div
+    class:list={['foto-segnaposto', classe]}
+    style={`aspect-ratio:${rapporto};${style ?? ''}`}
+    role="img"
+    aria-label={`Segnaposto: ${alt}`}
+  >
+    <span>{segnaposto ?? `FOTO: ${alt}, ${rapporto.replace('/', ':')}`}</span>
+  </div>
+)}

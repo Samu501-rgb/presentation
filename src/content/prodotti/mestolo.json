@@ -1,0 +1,12 @@
+{
+  "nome": "Mestolo",
+  "reparto": "cucina",
+  "descrizione": "Per minestre, sughi e brodi.",
+  "colore": "rosso",
+  "illustrazione": "mestolo",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

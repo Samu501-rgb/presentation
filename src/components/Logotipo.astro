@@ -1,0 +1,23 @@
+---
+/** Logotipo testuale (finché manca il file [LOGO]). view-transition-name persistente. */
+interface Props {
+  class?: string;
+  grande?: boolean;
+}
+const { class: classe, grande = false } = Astro.props;
+---
+
+<span
+  class:list={[
+    'logotipo inline-flex items-baseline font-display font-extrabold tracking-[-0.04em] leading-none',
+    grande ? 'text-6xl' : 'text-[1.625rem]',
+    classe,
+  ]}
+>
+  Gino<span class="visualmente-nascosto"> </span>
+  <span
+    class="logotipo__punto mx-[0.08em] inline-block size-[0.28em] translate-y-[-0.08em] rounded-full bg-pomodoro"
+    aria-hidden="true"
+  ></span>
+  Casa
+</span>

@@ -1,0 +1,64 @@
+---
+/**
+ * "L'apertura della serranda": solo alla prima visita della sessione in home,
+ * solo con JS e animazioni attive (classe html.serranda impostata nel <head>).
+ * È guidata dal CSS (max 900 ms) così non dipende dal caricamento del bundle;
+ * scripts/motion/preloader.ts aggiunge il contatore e il clic per saltare.
+ * L'H1 è già renderizzato sotto: la serranda non crea contenuti.
+ */
+import Logotipo from './Logotipo.astro';
+---
+
+<div class="serranda" aria-hidden="true" data-serranda>
+  <div class="serranda__righe"></div>
+  <div class="serranda__contenuto">
+    <Logotipo class="!text-5xl text-carta md:!text-7xl" />
+    <span
+      class="serranda__conta tabular font-display text-xl font-bold text-limone"
+      data-serranda-conta
+    >
+      0
+    </span>
+  </div>
+</div>
+
+<style>
+  .serranda {
+    display: none;
+  }
+  :global(html.serranda) .serranda {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    background: var(--color-inchiostro);
+    cursor: pointer;
+    animation: serranda-su 0.45s cubic-bezier(0.76, 0, 0.24, 1) 0.45s forwards;
+  }
+  :global(html.serranda.serranda--via) .serranda {
+    animation: serranda-su 0.35s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  }
+  .serranda__righe {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0 22px,
+      rgb(245 239 228 / 0.06) 22px 24px
+    );
+  }
+  .serranda__contenuto {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  @keyframes serranda-su {
+    to {
+      transform: translateY(-100%);
+      visibility: hidden;
+    }
+  }
+</style>

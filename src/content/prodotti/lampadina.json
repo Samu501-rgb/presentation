@@ -1,0 +1,12 @@
+{
+  "nome": "Lampadina",
+  "reparto": "ferramenta-ed-elettricita",
+  "descrizione": "La lampadina di ricambio, quando serve subito.",
+  "colore": "giallo",
+  "illustrazione": "lampadina",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

@@ -1,0 +1,12 @@
+{
+  "nome": "Bicchieri",
+  "reparto": "tavola",
+  "descrizione": "Bicchieri per l'acqua e per tutti i giorni.",
+  "colore": "azzurro",
+  "illustrazione": "bicchiere",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

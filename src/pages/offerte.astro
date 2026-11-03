@@ -1,0 +1,149 @@
+---
+/**
+ * /offerte — volantino corrente (pagine sfogliabili + PDF), date di validità in
+ * evidenza, articoli in offerta. Le offerte scadute spariscono alla build e,
+ * per sicurezza, anche lato client.
+ */
+import { Icon } from 'astro-icon/components';
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import OffertaCard from '../components/OffertaCard.astro';
+import MagneticButton from '../components/MagneticButton.astro';
+import { offerteValide, dataLeggibile, giorniRimasti, fineValidità } from '../data/catalogo';
+import { linkWhatsApp } from '../data/negozio';
+
+const offerte = await offerteValide();
+const briciole = [
+  { nome: 'Home', href: '/' },
+  { nome: 'Offerte', href: '/offerte' },
+];
+---
+
+<Base
+  titolo="Offerte e volantino – Gino Casa, bazar a Latina Est"
+  descrizione="Le offerte del mese e il volantino di Gino Casa, bazar e casalinghi a Latina Est di fronte alla farmacia. Date di validità sempre in evidenza."
+  og="offerte"
+  briciole={briciole}
+>
+  <section class="contenitore py-10 md:py-16" aria-labelledby="offerte-titolo">
+    <h1 id="offerte-titolo" class="titolo-1 !text-[clamp(3rem,9vw,8rem)]">
+      Questo mese in negozio.
+    </h1>
+    <p class="mt-6 max-w-[46ch] text-lg md:text-xl">
+      Offerte e volantino, con le date di validità sempre in vista. Prenoti su WhatsApp, ritiri
+      quando passi.
+    </p>
+  </section>
+
+  <div data-offerte-pagina>
+    {offerte.map((o) => {
+      const giorni = giorniRimasti(o.data.validaFino);
+      return (
+        <section
+          class="pb-20"
+          aria-labelledby={`off-${o.id}`}
+          data-scadenza={fineValidità(o.data.validaFino).toISOString()}
+        >
+          <div class="contenitore">
+            <div class="flex flex-wrap items-center gap-4 rounded-[1.75rem] bg-limone p-5 md:p-6">
+              <h2 id={`off-${o.id}`} class="titolo-3 mr-auto">
+                {o.data.titolo}
+              </h2>
+              <p class="cartellino text-base">
+                Dal {dataLeggibile(o.data.validaDal)} al {dataLeggibile(o.data.validaFino)}
+              </p>
+              <p
+                class="font-semibold"
+                data-giorni-rimasti
+                data-fino={fineValidità(o.data.validaFino).toISOString()}
+              >
+                {giorni <= 1 ? 'Ultimo giorno.' : `Ancora ${giorni} giorni.`}
+              </p>
+            </div>
+            {o.data.sottotitolo && <p class="mt-4 text-grafite">{o.data.sottotitolo}</p>}
+          </div>
+
+          {o.data.pagine.length > 0 && (
+            <div class="mt-10">
+              <h3 class="contenitore titolo-3">Il volantino</h3>
+              <ul
+                class="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[clamp(1rem,4vw,4rem)] pb-4"
+                data-lenis-prevent
+                tabindex="0"
+                aria-label="Pagine del volantino, scorri in orizzontale"
+              >
+                {o.data.pagine.map((pg) => (
+                  <li class="w-[80vw] shrink-0 snap-start md:w-[24rem]">
+                    <Foto
+                      src={pg.src}
+                      alt={pg.alt}
+                      segnaposto={pg.segnaposto}
+                      rapporto="3/4"
+                      class="card ring-2 ring-inchiostro"
+                    />
+                  </li>
+                ))}
+              </ul>
+              {o.data.pdf && (
+                <p class="contenitore mt-4">
+                  <a href={o.data.pdf} class="pillola" download>
+                    <Icon name="lucide:arrow-down" class="icona size-5" aria-hidden="true" />
+                    <span>Scarica il volantino (PDF)</span>
+                  </a>
+                </p>
+              )}
+            </div>
+          )}
+
+          {o.data.articoli.length > 0 && (
+            <div class="contenitore mt-14">
+              <h3 class="titolo-3">In offerta</h3>
+              <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {o.data.articoli.map((a) => (
+                  <OffertaCard
+                    nome={a.nome}
+                    illustrazione={a.illustrazione}
+                    colore={a.colore}
+                    prezzo={a.prezzo}
+                    prezzoPrima={a.prezzoPrima}
+                    nota={a.nota}
+                    href={a.prodotto ? `/prodotti/${a.prodotto.id}` : undefined}
+                  />
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      );
+    })}
+  </div>
+
+  <section class="contenitore pb-24" data-nessuna-offerta hidden={offerte.length > 0}>
+    <div class="card bg-argilla p-8 md:p-12">
+      <h2 class="titolo-3">In questo momento non ci sono offerte attive.</h2>
+      <p class="mt-3 max-w-[50ch]">
+        Passa in negozio o scrivici: c’è sempre qualcosa di conveniente sullo scaffale.
+      </p>
+      <div class="mt-6">
+        <MagneticButton
+          href={linkWhatsApp()}
+          testo="Scrivici su WhatsApp"
+          icona="lucide:message-circle"
+          esterno
+        />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { aggiornaScadenze } from '../scripts/scadenze';
+  import { registra } from '../scripts/motion/setup';
+  aggiornaScadenze();
+  // Se tutte le offerte sono scadute lato client, mostra il messaggio vuoto.
+  const sezioni = document.querySelectorAll<HTMLElement>('[data-offerte-pagina] [data-scadenza]');
+  if (sezioni.length && Array.from(sezioni).every((s) => s.hidden)) {
+    document.querySelector<HTMLElement>('[data-nessuna-offerta]')?.removeAttribute('hidden');
+  }
+  registra({ nome: 'offerte', carica: () => import('../scripts/motion/offerte'), quando: 'idle' });
+</script>

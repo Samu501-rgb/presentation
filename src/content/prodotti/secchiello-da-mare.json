@@ -1,0 +1,12 @@
+{
+  "nome": "Secchiello da mare",
+  "reparto": "stagionali",
+  "descrizione": "Il secchiello per la spiaggia.",
+  "colore": "azzurro",
+  "illustrazione": "secchiello",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

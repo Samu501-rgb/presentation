@@ -1,0 +1,116 @@
+---
+/**
+ * /negozio — [STORIA] oppure il manifesto (se la storia non è fornita: niente anni
+ * di fondazione o personaggi inventati), foto del punto vendita, servizi, orari,
+ * come arrivare e parcheggio.
+ */
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import Manifesto from '../sections/home/Manifesto.astro';
+import Negozio from '../sections/home/Negozio.astro';
+import { negozio, èSegnaposto } from '../data/negozio';
+
+const storiaConfermata = !èSegnaposto(negozio.storia);
+const foto = [
+  {
+    alt: 'L’insegna di Gino Casa',
+    segnaposto: 'FOTO: insegna e vetrina dalla strada, 16:9',
+    rapporto: '16/9',
+    classe: 'md:col-span-8',
+  },
+  {
+    alt: 'Le corsie del negozio',
+    segnaposto: 'FOTO: corsia con scaffali pieni, 4:5',
+    rapporto: '4/5',
+    classe: 'md:col-span-4',
+  },
+  {
+    alt: 'La cassa',
+    segnaposto: 'FOTO: cassa e banco, 4:5',
+    rapporto: '4/5',
+    classe: 'md:col-span-4',
+  },
+  {
+    alt: 'Il personale che consiglia',
+    segnaposto: 'FOTO: il personale che consiglia (con liberatoria), 16:9',
+    rapporto: '16/9',
+    classe: 'md:col-span-8',
+  },
+];
+const briciole = [
+  { nome: 'Home', href: '/' },
+  { nome: 'Il negozio', href: '/negozio' },
+];
+---
+
+<Base
+  titolo="Il negozio – Gino Casa, bazar e casalinghi a Latina Est"
+  descrizione="Gino Casa è il bazar sotto casa di Latina Est, di fronte alla farmacia: orari, come arrivare, parcheggio e servizi."
+  og="negozio"
+  briciole={briciole}
+>
+  <section class="contenitore py-10 md:py-16" aria-labelledby="negozio-h1">
+    <h1 id="negozio-h1" class="titolo-1 !text-[clamp(3rem,9vw,8rem)]">
+      Il bazar sotto casa.
+    </h1>
+    <p class="mt-6 max-w-[46ch] text-lg md:text-xl">
+      A Latina Est, proprio di fronte alla farmacia. Entri, trovi, esci: e se non c’è, te lo
+      procuriamo.
+    </p>
+  </section>
+
+  {storiaConfermata ? (
+    <section class="contenitore py-12" aria-labelledby="storia-titolo">
+      <h2 id="storia-titolo" class="titolo-2">
+        La nostra storia
+      </h2>
+      <div class="testo-lungo mt-6 text-lg">
+        <p>{negozio.storia}</p>
+      </div>
+    </section>
+  ) : (
+    <Manifesto />
+  )}
+
+  <section class="contenitore py-12" aria-labelledby="foto-titolo">
+    <h2 id="foto-titolo" class="visualmente-nascosto">
+      Il punto vendita
+    </h2>
+    <ul class="griglia gap-y-4">
+      {foto.map((f) => (
+        <li class:list={['col-span-4', f.classe]}>
+          <Foto alt={f.alt} segnaposto={f.segnaposto} rapporto={f.rapporto} class="card" />
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="contenitore py-12 md:py-20" aria-labelledby="servizi-titolo">
+    <h2 id="servizi-titolo" class="titolo-2">
+      Servizi
+    </h2>
+    <ul class="mt-8 grid gap-4 md:grid-cols-3">
+      <li class="card bg-limone p-6">
+        <h3 class="titolo-3">Prenota e ritira</h3>
+        <p class="mt-2">Scegli online, scrivici su WhatsApp e ritira in negozio.</p>
+      </li>
+      <li class="card bg-mare p-6">
+        <h3 class="titolo-3">Te lo troviamo</h3>
+        <p class="mt-2">
+          Non lo vedi sullo scaffale?{' '}
+          <a href="/te-lo-troviamo" class="link">
+            Chiedicelo
+          </a>
+          .
+        </p>
+      </li>
+      <li class="card bg-argilla p-6">
+        <h3 class="titolo-3">Altri servizi</h3>
+        <p class="mt-2">{negozio.servizi}</p>
+      </li>
+    </ul>
+    <p class="mt-6 text-grafite">Marchi disponibili: {negozio.marchi}</p>
+  </section>
+
+  <Negozio />
+</Base>

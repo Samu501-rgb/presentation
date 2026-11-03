@@ -1,0 +1,12 @@
+{
+  "nome": "Dispenser azzurro",
+  "reparto": "bagno",
+  "descrizione": "Un tocco di colore accanto al lavandino.",
+  "colore": "azzurro",
+  "illustrazione": "dispenser",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

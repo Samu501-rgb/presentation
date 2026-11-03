@@ -1,0 +1,148 @@
+---
+/**
+ * Footer: NAP completo (identico al JSON-LD), P.IVA (art. 35 DPR 633/1972),
+ * orari, social, link legali, toggle animazioni e credit.
+ * Su desktop si rivela da sotto il contenuto (effetto sipario, vedi Base.astro).
+ */
+import { Icon } from 'astro-icon/components';
+import Logotipo from './Logotipo.astro';
+import MotionToggle from './MotionToggle.astro';
+import Orari from './Orari.astro';
+import {
+  negozio,
+  indirizzoCompleto,
+  telefonoLeggibile,
+  hrefTelefono,
+  hrefEmail,
+  linkWhatsApp,
+  socialConfermati,
+} from '../data/negozio';
+import { NAVIGAZIONE, LEGALI } from '../data/navigazione';
+
+const tel = hrefTelefono();
+const mail = hrefEmail();
+const social = socialConfermati();
+const anno = new Date().getFullYear();
+---
+
+<footer class="pie su-scuro bg-inchiostro text-carta" id="pie">
+  <div class="contenitore pb-24 pt-16 md:pb-10 md:pt-20">
+    <div class="griglia gap-y-12">
+      <div class="col-span-4 md:col-span-3">
+        <a href="/" class="inline-block rounded-md" aria-label="Gino Casa, home">
+          <Logotipo grande class="!text-5xl md:!text-6xl" />
+        </a>
+        <p class="mt-5 max-w-[30ch] text-lg">Gino Casa — bazar e casalinghi a Latina Est.</p>
+        <p class="mt-2 text-carta/80">Di fronte alla farmacia.</p>
+        <a
+          href={linkWhatsApp()}
+          class="pillola pillola--limone mt-8"
+          target="_blank"
+          rel="noopener"
+        >
+          <Icon name="lucide:message-circle" class="icona size-5" aria-hidden="true" />
+          <span>Scrivici su WhatsApp</span>
+          <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+        </a>
+      </div>
+
+      <div class="col-span-4 md:col-span-3">
+        <h2 class="occhiello mb-4 !font-sans !tracking-[0.08em] text-limone">Dove siamo</h2>
+        <address class="not-italic leading-relaxed">
+          <strong>{negozio.nome}</strong>
+          <br />
+          {indirizzoCompleto()}
+          <br />
+          {tel ? (
+            <a href={tel} class="link-anim">
+              Tel. {telefonoLeggibile()}
+            </a>
+          ) : (
+            <span>Tel. {telefonoLeggibile()}</span>
+          )}
+          <br />
+          {mail ? (
+            <a href={mail} class="link-anim">
+              {negozio.email}
+            </a>
+          ) : (
+            <span>{negozio.email}</span>
+          )}
+        </address>
+        <p class="mt-4 text-carta/80">Parcheggio: {negozio.parcheggio}</p>
+      </div>
+
+      <div class="col-span-4 md:col-span-4">
+        <h2 class="occhiello mb-4 !font-sans !tracking-[0.08em] text-limone">Orari</h2>
+        <Orari compatta id="orari-footer" />
+      </div>
+
+      <nav class="col-span-4 md:col-span-2" aria-label="Footer" id="navigazione-footer">
+        <h2 class="occhiello mb-4 !font-sans !tracking-[0.08em] text-limone">Esplora</h2>
+        <ul class="space-y-1">
+          <li>
+            <a href="/" class="link-anim tocco inline-flex items-center">
+              Home
+            </a>
+          </li>
+          {NAVIGAZIONE.map((v) => (
+            <li>
+              <a href={v.href} class="link-anim tocco inline-flex items-center">
+                {v.testo}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a href="/te-lo-troviamo#lista" class="link-anim tocco inline-flex items-center">
+              La mia lista
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <hr class="scontrino my-12 text-carta" />
+
+    <div class="flex flex-col gap-6 text-sm md:flex-row md:items-start md:justify-between">
+      <ul class="flex flex-wrap gap-x-6 gap-y-1">
+        {LEGALI.map((v) => (
+          <li>
+            <a href={v.href} class="link-anim tocco inline-flex items-center">
+              {v.testo}
+            </a>
+          </li>
+        ))}
+        {social.map((s) => (
+          <li>
+            <a
+              href={s.url}
+              class="link-anim tocco inline-flex items-center gap-2"
+              target="_blank"
+              rel="noopener"
+            >
+              <Icon name={s.icona} class="icona size-4" aria-hidden="true" />
+              {s.nome}
+              <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <MotionToggle />
+    </div>
+
+    <p class="mt-8 text-sm text-carta/80" data-riga-legale>
+      © {anno} {negozio.ragioneSociale} – {indirizzoCompleto()} – P.IVA {negozio.piva} – Tel.{' '}
+      {telefonoLeggibile()} – {negozio.email}
+    </p>
+    <p class="mt-2 text-sm text-carta/80">
+      Sito realizzato da{' '}
+      {negozio.credit.url ? (
+        <a href={negozio.credit.url} class="link-anim">
+          {negozio.credit.nome}
+        </a>
+      ) : (
+        negozio.credit.nome
+      )}
+    </p>
+  </div>
+</footer>

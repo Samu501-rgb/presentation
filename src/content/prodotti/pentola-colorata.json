@@ -1,0 +1,12 @@
+{
+  "nome": "Pentola colorata",
+  "reparto": "cucina",
+  "descrizione": "Una pentola che porta un po' di colore in cucina.",
+  "colore": "rosso",
+  "illustrazione": "pentola",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": true,
+  "inOfferta": false,
+  "esempio": true
+}

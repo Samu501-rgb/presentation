@@ -1,0 +1,184 @@
+---
+/**
+ * Hero: H1 (probabile elemento LCP, VISIBILE dal primo paint), sottotitolo, 2 CTA,
+ * 9 oggetti molto diversi intorno al titolo ("c'è di tutto") e due bollini.
+ * Animazioni in scripts/motion/hero.ts.
+ */
+import Oggetto from '../../components/Oggetto.astro';
+import MagneticButton from '../../components/MagneticButton.astro';
+import { linkWhatsApp, negozio } from '../../data/negozio';
+import type { NomeOggetto } from '../../data/oggetti';
+
+// [nome, colore, desktop x/y/w, mobile x/y/w, rotazione, profondità]
+const oggetti: [
+  NomeOggetto,
+  string,
+  [number, number, number],
+  [number, number, number],
+  number,
+  number,
+][] = [
+  ['moka', 'rosso', [7, 17, 10], [4, 13, 20], -12, 1.4],
+  ['tazza', 'giallo', [25, 9, 7], [32, 10, 15], 10, 0.8],
+  ['barattolo', 'azzurro', [66, 8, 6.5], [62, 11, 14], -8, 0.9],
+  ['piatto', 'azzurro', [80, 15, 12], [78, 14, 19], 8, 1.2],
+  ['lampadina', 'giallo', [89, 50, 7.5], [84, 74, 14], 14, 1.6],
+  ['cestino', 'giallo', [2, 55, 11], [2, 76, 19], 6, 1.1],
+  ['candela', 'rosso', [17, 77, 6.5], [26, 84, 12], -6, 0.7],
+  ['strofinaccio', 'rosso', [73, 70, 9], [62, 83, 14], -10, 1],
+  ['presa', 'giallo', [40, 86, 11], [40, 92, 18], 4, 0.6],
+];
+---
+
+<section
+  class="hero relative flex min-h-[100svh] items-center overflow-clip pb-28 pt-32 md:pb-36 md:pt-36"
+  aria-labelledby="hero-titolo"
+  data-hero
+>
+  <div
+    class="hero__oggetti pointer-events-none absolute inset-0"
+    aria-hidden="true"
+    data-hero-oggetti
+  >
+    {oggetti.map(([nome, colore, [x, y, w], [xm, ym, wm], rot, prof]) => (
+      <div
+        class="hero__oggetto absolute"
+        style={`--x:${x}%;--y:${y}%;--w:${w}vw;--xm:${xm}%;--ym:${ym}%;--wm:${wm}vw;--rot:${rot}deg`}
+        data-profondita={prof}
+      >
+        <div class="hero__oggetto-interno" data-stato-iniziale>
+          <Oggetto nome={nome} colore={colore} dimensione={160} />
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="contenitore relative z-10 text-center">
+    <h1 id="hero-titolo" class="titolo-1 hero__titolo mx-auto" data-hero-titolo>
+      <span class="block">Tutto per</span> <span class="block">la casa.</span>{' '}
+      <span class="block text-pomodoro">A due passi.</span>
+    </h1>
+    <p
+      class="hero__sotto mx-auto mt-8 max-w-[38ch] text-lg md:text-xl"
+      data-hero-sotto
+      data-stato-iniziale
+    >
+      Pentole, piatti, pulizia, ordine, piccoli regali e mille cose utili. A{' '}
+      <span class="sottolinea" data-sottolinea>
+        Latina Est
+      </span>
+      , di fronte alla farmacia.
+    </p>
+    <div class="hero__cta mt-9 flex flex-wrap items-center justify-center gap-3" data-hero-cta>
+      <div class="hero__cta-maschera" data-stato-iniziale>
+        <MagneticButton href="/reparti" testo="Scopri i reparti" icona="lucide:arrow-right" />
+      </div>
+      <div class="hero__cta-maschera" data-stato-iniziale>
+        <MagneticButton
+          href={linkWhatsApp()}
+          testo="Scrivici su WhatsApp"
+          vuota
+          icona="lucide:message-circle"
+          esterno
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Bollini -->
+  <div class="hero__bollini pointer-events-none absolute inset-x-0 bottom-6 z-20 md:bottom-auto md:top-[56%]">
+    <div class="contenitore relative flex justify-between md:block">
+      <svg
+        viewBox="0 0 200 200"
+        class="hero__bollino-giro size-28 md:absolute md:left-[13%] md:top-8 md:size-40"
+        role="img"
+        aria-label="Latina Est, di fronte alla farmacia"
+        data-bollino-giro
+      >
+        <defs>
+          <path id="giro" d="M100 100m-74 0a74 74 0 1 1 148 0a74 74 0 1 1 -148 0"></path>
+        </defs>
+        <circle cx="100" cy="100" r="98" fill="#1F1A17"></circle>
+        <text
+          font-size="17"
+          font-weight="700"
+          letter-spacing="2.2"
+          fill="#F5EFE4"
+          font-family="sans-serif"
+        >
+          <textPath href="#giro">LATINA EST · DI FRONTE ALLA FARMACIA ·</textPath>
+        </text>
+        <path d="M91 72h18v19h19v18h-19v19H91v-19H72V91h19z" fill="#9CCFD8"></path>
+      </svg>
+      <p class="bollino hero__bollino-orari w-28 rotate-[8deg] text-xs [overflow-wrap:anywhere] md:absolute md:right-[9%] md:top-[-2rem] md:w-36 md:text-sm">
+        {negozio.orariSintetici}
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero__oggetto {
+    left: var(--xm);
+    top: var(--ym);
+    width: var(--wm);
+  }
+  @media (min-width: 768px) {
+    .hero__oggetto {
+      left: var(--x);
+      top: var(--y);
+      width: var(--w);
+    }
+  }
+  .hero__oggetto-interno {
+    transform: rotate(var(--rot));
+  }
+  .hero__titolo {
+    transform-origin: 50% 40%;
+  }
+  .sottolinea {
+    position: relative;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .sottolinea::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.08em;
+    height: 0.16em;
+    border-radius: 4px;
+    background: var(--color-pomodoro);
+    transform-origin: left center;
+    transform: scaleX(var(--linea, 1));
+  }
+  .hero__cta-maschera {
+    overflow: clip;
+    overflow-clip-margin: 12px;
+    padding: 4px;
+  }
+  /* Stati iniziali: SOLO con JS e animazioni attive (mai sull'H1). */
+  :global(html.js[data-motion='full']:not(.motion-ko)) .hero__oggetto-interno {
+    opacity: 0;
+  }
+  :global(html.js[data-motion='full']:not(.motion-ko)) .hero__sotto {
+    visibility: hidden;
+  }
+  :global(html.js[data-motion='full']:not(.motion-ko)) .hero__cta-maschera > :global(*) {
+    transform: translateY(110%);
+  }
+  :global(html.js[data-motion='full']:not(.motion-ko)) .sottolinea {
+    --linea: 0;
+  }
+  @media (max-width: 767px) {
+    .hero__bollino-orari {
+      margin-top: 0;
+    }
+  }
+</style>
+
+<script>
+  import { registra } from '../../scripts/motion/setup';
+  registra({ nome: 'hero', carica: () => import('../../scripts/motion/hero'), quando: 'subito' });
+</script>

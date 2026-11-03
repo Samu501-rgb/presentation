@@ -1,0 +1,62 @@
+---
+/** Dichiarazione di accessibilità. Obiettivo: WCAG 2.1 livello AA. */
+import Legale from '../layouts/Legale.astro';
+import { negozio, linkWhatsApp } from '../data/negozio';
+---
+
+<Legale
+  titolo="Dichiarazione di accessibilità – Gino Casa"
+  h1="Accessibilità"
+  descrizione="Come il sito di Gino Casa punta alla conformità WCAG 2.1 AA e come segnalarci un problema."
+  percorso="/accessibilita"
+>
+  <p>
+    Vogliamo che il sito di {negozio.nome} sia facile da usare per tutti. Il riferimento è lo
+    standard
+    <strong>WCAG 2.1 livello AA</strong>.
+  </p>
+
+  <h2>Cosa abbiamo fatto</h2>
+  <ul>
+    <li>
+      Tutto il testo è HTML vero, leggibile anche senza JavaScript e con i lettori di schermo.
+    </li>
+    <li>Colori con contrasto verificato; il focus da tastiera è sempre visibile.</li>
+    <li>
+      Il sito si usa completamente da tastiera; le sezioni animate non bloccano la navigazione.
+    </li>
+    <li>
+      Le animazioni rispettano l’impostazione “riduci movimento” del tuo dispositivo e si possono
+      spegnere con l’interruttore “Animazioni” nell’header e nel footer.
+    </li>
+    <li>I contenuti in movimento (le scritte scorrevoli) hanno un pulsante “Metti in pausa”.</li>
+    <li>I moduli hanno etichette vere, messaggi di errore chiari e annunciati.</li>
+  </ul>
+
+  <h2>Stato di conformità</h2>
+  <p>
+    Il sito è <strong>[STATO_CONFORMITA]</strong> alle WCAG 2.1 AA. Verifica effettuata il
+    [DATA_VERIFICA] con test automatici (axe, Lighthouse) e prove manuali da tastiera e con lettore
+    di schermo.
+  </p>
+
+  <h2>Limiti noti</h2>
+  <ul>
+    <li>La mappa di Google, se caricata, è un contenuto di terze parti che non controlliamo.</li>
+    <li>Alcune foto sono ancora segnaposto descrittivi, in attesa degli scatti in negozio.</li>
+  </ul>
+
+  <h2>Segnalaci un problema</h2>
+  <p>
+    Se qualcosa non funziona o non riesci a usare una parte del sito, scrivici a {negozio.email} o
+    su
+    <a
+      href={linkWhatsApp('Ciao Gino Casa! Segnalo un problema di accessibilità sul sito: ')}
+      target="_blank"
+      rel="noopener"
+    >
+      WhatsApp
+    </a>
+    . Ti rispondiamo il prima possibile.
+  </p>
+</Legale>

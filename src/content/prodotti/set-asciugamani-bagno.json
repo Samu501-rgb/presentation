@@ -1,0 +1,12 @@
+{
+  "nome": "Set di asciugamani",
+  "reparto": "bagno",
+  "descrizione": "Asciugamani per il bagno di casa.",
+  "colore": "verde",
+  "illustrazione": "asciugamani",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

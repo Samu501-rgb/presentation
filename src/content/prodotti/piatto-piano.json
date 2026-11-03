@@ -1,0 +1,12 @@
+{
+  "nome": "Piatto piano",
+  "reparto": "tavola",
+  "descrizione": "Il piatto di tutti i giorni.",
+  "colore": "azzurro",
+  "illustrazione": "piatto",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

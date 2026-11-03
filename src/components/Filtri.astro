@@ -1,0 +1,134 @@
+---
+/**
+ * Barra filtri sticky (scaffale e pagine reparto): reparto, colore, "in offerta",
+ * "novità" e, nello scaffale, il toggle Tela/Griglia. Filtri live senza cambiare
+ * vista. Nascosta senza JS (si naviga con i link ai reparti).
+ * Logica in scripts/filtri.ts.
+ */
+import { Icon } from 'astro-icon/components';
+import { TINTE } from '../data/catalogo';
+import type { Reparto } from '../data/catalogo';
+
+interface Props {
+  reparti?: Reparto[];
+  colori: string[];
+  conVista?: boolean;
+  totale: number;
+}
+const { reparti, colori, conVista = false, totale } = Astro.props;
+---
+
+<div class="filtri sticky top-[5.25rem] z-40 py-3" data-filtri hidden>
+  <div class="contenitore">
+    <div class="filtri__barra flex flex-wrap items-center gap-x-6 gap-y-3 rounded-[1.75rem] bg-carta/95 p-3 ring-2 ring-inchiostro backdrop-blur md:rounded-full md:px-5">
+      {reparti && (
+        <div class="filtri__gruppo flex min-w-0 max-w-full items-center gap-2">
+          <label for="filtro-reparto" class="text-sm font-semibold">
+            Reparto
+          </label>
+          <select
+            id="filtro-reparto"
+            class="tocco max-w-[14rem] rounded-full border-2 border-inchiostro bg-carta px-3 font-semibold"
+            data-filtro-reparto
+          >
+            <option value="">Tutti</option>
+            {reparti.map((r) => (
+              <option value={r.id}>{r.data.breve ?? r.data.titolo}</option>
+            ))}
+          </select>
+        </div>
+      )}
+      <div
+        class="filtri__gruppo flex items-center gap-2"
+        role="group"
+        aria-labelledby="filtro-colore-et"
+      >
+        <span id="filtro-colore-et" class="text-sm font-semibold">
+          Colore
+        </span>
+        {colori.map((c) => (
+          <button
+            type="button"
+            class="filtri__colore tocco grid place-items-center rounded-full"
+            aria-pressed="false"
+            data-filtro-colore={c}
+          >
+            <span
+              class="block size-6 rounded-full ring-2 ring-inchiostro"
+              style={`background:${TINTE[c].campione}`}
+              aria-hidden="true"
+            />
+            <span class="visualmente-nascosto">{TINTE[c].nome}</span>
+          </button>
+        ))}
+      </div>
+      <div class="filtri__gruppo flex items-center gap-2" role="group" aria-label="Altri filtri">
+        <button
+          type="button"
+          class="filtri__chip tocco rounded-full border-2 border-inchiostro px-4 text-sm font-semibold"
+          aria-pressed="false"
+          data-filtro-flag="offerta"
+        >
+          In offerta
+        </button>
+        <button
+          type="button"
+          class="filtri__chip tocco rounded-full border-2 border-inchiostro px-4 text-sm font-semibold"
+          aria-pressed="false"
+          data-filtro-flag="nuovo"
+        >
+          Novità
+        </button>
+      </div>
+      <button type="button" class="link-anim tocco text-sm font-semibold" data-filtri-azzera hidden>
+        Azzera filtri
+      </button>
+
+      <p class="ml-auto text-sm font-semibold" aria-live="polite" aria-atomic="true">
+        <span class="tabular font-display text-2xl font-extrabold" data-contatore>
+          {totale}
+        </span>
+        <span data-contatore-etichetta>oggetti</span>
+      </p>
+
+      {conVista && (
+        <div class="filtri__vista flex rounded-full bg-argilla p-1" role="group" aria-label="Vista">
+          <button
+            type="button"
+            class="filtri__vista-btn tocco inline-flex items-center gap-2 rounded-full px-4 text-sm font-semibold"
+            aria-pressed="false"
+            data-vista-btn="tela"
+          >
+            <Icon name="lucide:move" class="icona size-4" aria-hidden="true" />
+            Tela
+          </button>
+          <button
+            type="button"
+            class="filtri__vista-btn tocco inline-flex items-center gap-2 rounded-full px-4 text-sm font-semibold"
+            aria-pressed="true"
+            data-vista-btn="griglia"
+          >
+            <Icon name="lucide:layout-grid" class="icona size-4" aria-hidden="true" />
+            Griglia
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  .filtri__chip[aria-pressed='true'],
+  .filtri__vista-btn[aria-pressed='true'] {
+    background: var(--color-inchiostro);
+    color: var(--color-carta);
+  }
+  .filtri__colore[aria-pressed='true'] > span:first-child {
+    box-shadow:
+      0 0 0 3px var(--color-carta),
+      0 0 0 5px var(--color-inchiostro);
+  }
+  .filtri__colore[aria-pressed='true']::after {
+    content: '';
+  }
+</style>

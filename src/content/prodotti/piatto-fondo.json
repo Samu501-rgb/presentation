@@ -1,0 +1,12 @@
+{
+  "nome": "Piatto fondo",
+  "reparto": "tavola",
+  "descrizione": "Per la pasta, la minestra e tutto ciò che si mangia col cucchiaio.",
+  "colore": "giallo",
+  "illustrazione": "piatto",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": true,
+  "esempio": true
+}

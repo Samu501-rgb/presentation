@@ -1,0 +1,68 @@
+---
+/** 404 ironica: "Questo oggetto non è sullo scaffale", con un piatto che cade e rimbalza. */
+import Base from '../layouts/Base.astro';
+import Oggetto from '../components/Oggetto.astro';
+---
+
+<Base
+  titolo="Pagina non trovata – Gino Casa"
+  descrizione="Questo oggetto non è sullo scaffale. Torna ai reparti di Gino Casa, bazar a Latina Est."
+  og="home"
+  noindex
+>
+  <section
+    class="contenitore grid min-h-[80svh] place-items-center py-32 text-center"
+    aria-labelledby="titolo-404"
+  >
+    <div>
+      <div class="caduta mx-auto w-40 md:w-56" aria-hidden="true">
+        <Oggetto nome="piatto" colore="azzurro" />
+      </div>
+      <p class="occhiello mt-8">Errore 404</p>
+      <h1 id="titolo-404" class="titolo-2 mx-auto mt-4 max-w-[16ch]">
+        Questo oggetto non è sullo scaffale.
+      </h1>
+      <p class="mx-auto mt-6 max-w-[40ch] text-lg">
+        Forse l’abbiamo spostato, forse non c’è mai stato. Ma da qualche parte c’è quello che
+        cerchi.
+      </p>
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        <a href="/reparti" class="pillola">
+          Vai ai reparti
+        </a>
+        <a href="/te-lo-troviamo" class="pillola pillola--vuota">
+          Te lo troviamo
+        </a>
+        <a href="/" class="pillola pillola--vuota">
+          Torna alla home
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  :global(html[data-motion='full']) .caduta {
+    animation: cade 1.6s cubic-bezier(0.3, 0, 0.6, 1) both;
+  }
+  @keyframes cade {
+    0% {
+      transform: translateY(-60vh) rotate(-40deg);
+    }
+    45% {
+      transform: translateY(0) rotate(8deg);
+    }
+    60% {
+      transform: translateY(-14%) rotate(-4deg);
+    }
+    75% {
+      transform: translateY(0) rotate(2deg);
+    }
+    86% {
+      transform: translateY(-4%) rotate(-1deg);
+    }
+    100% {
+      transform: translateY(0) rotate(0);
+    }
+  }
+</style>

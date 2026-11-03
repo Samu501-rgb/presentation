@@ -1,0 +1,12 @@
+{
+  "nome": "Asciugamani ospite",
+  "reparto": "tessile",
+  "descrizione": "Piccoli asciugamani per gli ospiti.",
+  "colore": "azzurro",
+  "illustrazione": "asciugamani",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": true,
+  "inOfferta": false,
+  "esempio": true
+}

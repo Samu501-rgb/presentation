@@ -1,0 +1,12 @@
+{
+  "nome": "Cestino da picnic",
+  "reparto": "stagionali",
+  "descrizione": "Per la gita fuori porta.",
+  "colore": "giallo",
+  "illustrazione": "cestino",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": false,
+  "inOfferta": false,
+  "esempio": true
+}

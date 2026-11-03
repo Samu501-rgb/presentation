@@ -1,0 +1,12 @@
+{
+  "nome": "Barattolo rosso",
+  "reparto": "ordine-e-contenitori",
+  "descrizione": "Il barattolo che si vede sulla mensola.",
+  "colore": "rosso",
+  "illustrazione": "barattolo",
+  "immagini": [],
+  "disponibile": true,
+  "nuovo": true,
+  "inOfferta": false,
+  "esempio": true
+}

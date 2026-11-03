@@ -1,0 +1,69 @@
+---
+/**
+ * Tabella orari in HTML visibile (anche per la SEO). Il giorno corrente viene
+ * evidenziato lato client con "Oggi aperto fino alle …" / "Oggi chiuso".
+ * Senza JS la tabella resta completa.
+ */
+import { negozio, fasceTesto, orariConfermati } from '../data/negozio';
+
+interface Props {
+  class?: string;
+  compatta?: boolean;
+  id?: string;
+}
+const { class: classe, compatta = false, id = 'orari' } = Astro.props;
+const dati = JSON.stringify({ confermati: orariConfermati(), orari: negozio.orari });
+---
+
+<div class:list={['orari', classe]} data-orari={dati}>
+  <p class="orari__stato mb-3 min-h-[1.5em] font-semibold" data-orari-stato aria-live="polite"></p>
+  <table class="w-full border-collapse text-left tabular" aria-labelledby={`${id}-titolo`}>
+    <caption
+      id={`${id}-titolo`}
+      class:list={[
+        compatta ? 'visualmente-nascosto' : 'mb-3 text-left font-display text-2xl font-bold',
+      ]}
+    >
+      Orari di apertura
+    </caption>
+    <tbody>
+      {negozio.orari.map((g) => (
+        <tr class="orari__riga border-b border-current/20" data-giorno={g.indice}>
+          <th scope="row" class:list={['py-2 pr-4 font-semibold', compatta && 'py-1']}>
+            {g.nome}
+            <span class="orari__oggi ml-2 hidden rounded-full bg-limone px-2 py-0.5 text-xs font-bold text-inchiostro">
+              Oggi
+            </span>
+          </th>
+          <td class:list={['py-2 text-right', compatta && 'py-1 text-[0.9375rem]']}>
+            {fasceTesto(g)}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  {!orariConfermati() && (
+    <p class="mt-3 text-sm opacity-80">Giorno di chiusura: {negozio.giornoChiusura}</p>
+  )}
+</div>
+
+<style>
+  .orari__riga.is-oggi .orari__oggi {
+    display: inline-block;
+  }
+  .orari__riga.is-oggi th,
+  .orari__riga.is-oggi td {
+    font-weight: 700;
+  }
+</style>
+
+<script>
+  import { statoOrari } from '../scripts/orari';
+  document.querySelectorAll<HTMLElement>('[data-orari]').forEach((el) => {
+    const dati = JSON.parse(el.dataset.orari || '{}');
+    const stato = statoOrari(dati.orari, dati.confermati);
+    el.querySelector(`[data-giorno="${stato.giorno}"]`)?.classList.add('is-oggi');
+    const p = el.querySelector('[data-orari-stato]');
+    if (p && stato.testo) p.textContent = stato.testo;
+  });
+</script>
