@@ -1,0 +1,13 @@
+# Ricostruisce il sito ogni notte su Cloudflare Pages: le offerte scadute spariscono.
+# Serve il secret CF_DEPLOY_HOOK (Cloudflare Pages → Settings → Builds → Deploy hooks).
+name: Rebuild giornaliero
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+jobs:
+  deploy-hook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chiama il deploy hook
+        run: curl -fsS -X POST "${{ secrets.CF_DEPLOY_HOOK }}"

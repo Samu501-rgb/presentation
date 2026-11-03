@@ -101,6 +101,11 @@
     display: none !important;
   }
 
+  /* Elementi che funzionano solo con JS: nascosti via CSS (nessun layout shift). */
+  html:not(.js) .solo-js {
+    display: none !important;
+  }
+
   img,
   svg,
   video {
@@ -204,6 +209,11 @@
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;
+  }
+
+  /* Link su sfondi colorati (limone, mare, argilla): eredita il colore del testo. */
+  .link--neutro {
+    color: inherit;
   }
 
   /* Link testuale: sottolineato che entra da sinistra ed esce a destra. */
@@ -394,6 +404,11 @@
 
   html.js .skeleton img.caricata {
     opacity: 1;
+  }
+
+  /* Testo secondario che si adatta allo sfondo (≥ 4.5:1 su carta, limone, mare). */
+  .testo-secondario {
+    color: color-mix(in srgb, currentColor 80%, transparent);
   }
 
   .visualmente-nascosto {

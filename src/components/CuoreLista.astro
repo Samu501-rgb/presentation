@@ -18,7 +18,7 @@ const { slug, nome, codice, grande = false, class: classe } = Astro.props;
 <button
   type="button"
   class:list={[
-    'cuore tocco relative inline-grid place-items-center rounded-full border-2 border-inchiostro bg-carta text-inchiostro transition-colors',
+    'cuore solo-js tocco relative inline-grid place-items-center rounded-full border-2 border-inchiostro bg-carta text-inchiostro transition-colors',
     grande ? 'h-12 gap-2 px-5 grid-flow-col font-semibold' : 'size-11',
     classe,
   ]}
@@ -27,7 +27,6 @@ const { slug, nome, codice, grande = false, class: classe } = Astro.props;
   data-nome={nome}
   data-codice={codice}
   aria-pressed="false"
-  hidden
 >
   <Icon name="lucide:heart" class="icona size-5" aria-hidden="true" />
   {grande ? (

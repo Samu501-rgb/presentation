@@ -25,12 +25,18 @@ import { Icon } from 'astro-icon/components';
       <p class="mt-4 font-semibold tabular" data-vr-prezzo></p>
       <p class="mt-2 text-grafite">Prenoti con un messaggio, ritiri quando passi.</p>
       <div class="mt-auto flex flex-wrap gap-3 pt-8">
-        <a class="pillola pillola--pomodoro" data-vr-wa target="_blank" rel="noopener">
+        <a
+          href="/te-lo-troviamo"
+          class="pillola pillola--pomodoro"
+          data-vr-wa
+          target="_blank"
+          rel="noopener"
+        >
           <Icon name="lucide:message-circle" class="icona size-5" aria-hidden="true" />
           <span>Prenota su WhatsApp</span>
           <span class="visualmente-nascosto"> (si apre in una nuova scheda)</span>
         </a>
-        <a class="pillola pillola--vuota" data-vr-scheda>
+        <a href="/reparti" class="pillola pillola--vuota" data-vr-scheda>
           Vedi la scheda
         </a>
       </div>

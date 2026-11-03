@@ -9,7 +9,7 @@ export default defineConfig({
   site: process.env.SITE_URL ?? urlSito(),
   output: 'static',
   trailingSlash: 'never',
-  build: { format: 'directory', inlineStylesheets: 'auto' },
+  build: { format: 'directory', inlineStylesheets: 'always' },
   // Prefetch disattivato: niente richieste speculative non richieste.
   prefetch: false,
   integrations: [

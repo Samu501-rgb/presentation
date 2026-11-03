@@ -18,7 +18,7 @@ interface Props {
 const { reparti, colori, conVista = false, totale } = Astro.props;
 ---
 
-<div class="filtri sticky top-[5.25rem] z-40 py-3" data-filtri hidden>
+<div class="filtri solo-js sticky top-[5.25rem] z-40 py-3" data-filtri>
   <div class="contenitore">
     <div class="filtri__barra flex flex-wrap items-center gap-x-6 gap-y-3 rounded-[1.75rem] bg-carta/95 p-3 ring-2 ring-inchiostro backdrop-blur md:rounded-full md:px-5">
       {reparti && (

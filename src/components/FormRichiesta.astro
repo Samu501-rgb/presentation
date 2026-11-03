@@ -41,7 +41,7 @@ const azioneNoJs = numero ? `https://wa.me/39${numero.replace(/\D/g, '')}` : 'ht
   data-endpoint={endpoint}
   aria-describedby={`${id}-nota`}
 >
-  <p id={`${id}-nota`} class="mb-6 text-sm text-grafite">
+  <p id={`${id}-nota`} class="mb-6 text-sm testo-secondario">
     I campi con * sono obbligatori.
   </p>
   <div class="grid gap-5 md:grid-cols-2">
@@ -154,7 +154,7 @@ const azioneNoJs = numero ? `https://wa.me/39${numero.replace(/\D/g, '')}` : 'ht
     )}
   </div>
 
-  <p class="mt-5 text-sm text-grafite">
+  <p class="mt-5 text-sm testo-secondario">
     <Icon name="lucide:camera" class="icona mr-1 inline size-4 align-[-3px]" aria-hidden="true" />
     Hai una foto? Con l’invio su WhatsApp la alleghi direttamente in chat.
   </p>
@@ -170,7 +170,7 @@ const azioneNoJs = numero ? `https://wa.me/39${numero.replace(/\D/g, '')}` : 'ht
     />
     <label for={`${id}-privacy`} class="text-sm">
       Ho letto l’
-      <a href="/privacy-policy" class="link" target="_blank">
+      <a href="/privacy-policy" class="link link--neutro" target="_blank">
         informativa privacy
       </a>{' '}
       e acconsento al trattamento dei miei dati per ricevere una risposta alla richiesta. *

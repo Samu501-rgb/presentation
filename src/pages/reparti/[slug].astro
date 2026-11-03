@@ -42,54 +42,59 @@ const briciole = [
   briciole={briciole}
   mostraBriciole={false}
 >
-  <section
-    class:list={[
-      'reparto-hero relative overflow-clip pb-16 pt-28 md:pb-24 md:pt-36',
-      stile.bg,
-      stile.testo,
-      stile.scuro && 'su-scuro',
-    ]}
-    aria-labelledby="reparto-titolo"
-  >
-    <div class="contenitore griglia items-end gap-y-10">
-      <div class="col-span-4 md:col-span-7">
-        <nav aria-label="Percorso" class="mb-8 text-sm">
-          <ol class="flex flex-wrap gap-2">
-            <li>
-              <a href="/" class="link-anim">
-                Home
-              </a>{' '}
-              <span aria-hidden="true">/</span>
-            </li>
-            <li>
-              <a href="/reparti" class="link-anim">
-                Reparti
-              </a>{' '}
-              <span aria-hidden="true">/</span>
-            </li>
-            <li aria-current="page" class="font-semibold">
-              {r.titolo}
-            </li>
-          </ol>
-        </nav>
-        <p class="occhiello mb-4">Reparto {String(r.ordine).padStart(2, '0')}</p>
-        <h1 id="reparto-titolo" class="titolo-1 max-w-[11ch] !text-[clamp(3rem,9vw,8rem)]">
-          {r.titolo}
-        </h1>
-        <p class="mt-6 max-w-[44ch] text-lg md:text-xl">{r.descrizione}</p>
-        <div class="testo-lungo mt-4">
-          <Content />
+  <!-- Hero del reparto: un grande riquadro col colore del reparto, sotto l'header su carta. -->
+  <section class="reparto-hero contenitore pt-24 md:pt-28" aria-labelledby="reparto-titolo">
+    <div
+      class:list={[
+        'card relative overflow-clip px-6 py-10 md:px-12 md:py-16',
+        stile.bg,
+        stile.testo,
+        stile.scuro && 'su-scuro',
+      ]}
+    >
+      <div class="griglia items-end gap-y-10">
+        <div class="col-span-4 md:col-span-7">
+          <nav aria-label="Percorso" class="mb-8 text-sm">
+            <ol class="flex flex-wrap gap-2">
+              <li>
+                <a href="/" class="link-anim">
+                  Home
+                </a>{' '}
+                <span aria-hidden="true">/</span>
+              </li>
+              <li>
+                <a href="/reparti" class="link-anim">
+                  Reparti
+                </a>{' '}
+                <span aria-hidden="true">/</span>
+              </li>
+              <li aria-current="page" class="font-semibold">
+                {r.titolo}
+              </li>
+            </ol>
+          </nav>
+          <p class="occhiello mb-4">Reparto {String(r.ordine).padStart(2, '0')}</p>
+          <h1 id="reparto-titolo" class="titolo-1 max-w-[11ch] !text-[clamp(3rem,9vw,8rem)]">
+            {r.titolo}
+          </h1>
+          <p class="mt-6 max-w-[44ch] text-lg md:text-xl">{r.descrizione}</p>
+          <div class="testo-lungo mt-4">
+            <Content />
+          </div>
         </div>
-      </div>
-      <div class="col-span-4 md:col-span-5" aria-hidden="true">
-        <div class="reparto-hero__oggetti relative mx-auto aspect-square max-w-md">
-          {r.oggetti.map((o, k) => (
-            <div
-              class:list={['reparto-hero__oggetto absolute reveal', `reparto-hero__oggetto--${k}`]}
-            >
-              <Oggetto nome={o} colore={tinte[(k + r.ordine) % tinte.length]} dimensione={260} />
-            </div>
-          ))}
+        <div class="col-span-4 md:col-span-5" aria-hidden="true">
+          <div class="reparto-hero__oggetti relative mx-auto aspect-square max-w-md">
+            {r.oggetti.map((o, k) => (
+              <div
+                class:list={[
+                  'reparto-hero__oggetto absolute reveal',
+                  `reparto-hero__oggetto--${k}`,
+                ]}
+              >
+                <Oggetto nome={o} colore={tinte[(k + r.ordine) % tinte.length]} dimensione={260} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

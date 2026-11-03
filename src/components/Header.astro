@@ -19,12 +19,9 @@ const attivo = (href: string) =>
   <div class="testata__barra-pagina barra-pagina" aria-hidden="true"></div>
   <div class="contenitore">
     <div class="testata__interno mt-3 flex h-16 items-center justify-between gap-4 rounded-full px-3 md:px-5">
-      <a
-        href="/"
-        class="testata__logo tocco inline-flex items-center rounded-full px-1"
-        aria-label="Gino Casa, vai alla home"
-      >
+      <a href="/" class="testata__logo tocco inline-flex items-center rounded-full px-1">
         <Logotipo />
+        <span class="visualmente-nascosto">, vai alla home</span>
       </a>
 
       <nav aria-label="Principale" class="hidden lg:block">
@@ -53,7 +50,7 @@ const attivo = (href: string) =>
           <span class="hidden xl:inline">La mia lista</span>
           <span class="visualmente-nascosto xl:hidden">La mia lista</span>
           <span
-            class="lista-conteggio tabular grid h-6 min-w-6 place-items-center rounded-full bg-pomodoro-700 px-1.5 text-xs font-bold text-carta"
+            class="lista-conteggio tabular absolute -top-0.5 left-6 grid h-5 min-w-5 place-items-center rounded-full bg-pomodoro-700 px-1 text-[0.6875rem] font-bold text-carta"
             data-lista-conteggio
             hidden
           >
@@ -79,11 +76,10 @@ const attivo = (href: string) =>
         </a>
         <button
           type="button"
-          class="hamburger tocco relative grid size-12 place-items-center rounded-full bg-inchiostro text-carta lg:hidden"
+          class="hamburger solo-js tocco relative grid size-12 place-items-center rounded-full bg-inchiostro text-carta lg:hidden"
           aria-expanded="false"
           aria-controls="menu-mobile"
           data-menu-apri
-          hidden
         >
           <span class="visualmente-nascosto" data-menu-etichetta>
             Apri il menu

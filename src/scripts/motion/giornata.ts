@@ -67,6 +67,7 @@ export function init(ctx: Contesto) {
       SplitText.create(c.querySelector('.giornata__titolo-testo'), {
         type: 'lines',
         mask: 'lines',
+        aria: 'none',
       }),
     );
     const parti = capitoli.map((c, i) => ({

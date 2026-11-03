@@ -50,6 +50,11 @@ interface Registrazione {
   el?: string;
   /** Avvia anche con movimento ridotto (moduli funzionali: filtri, tela…). */
   sempre?: boolean;
+  /**
+   * Il modulo crea un pin (aggiunge altezza alla pagina). Se viene avviato quando
+   * la sezione è già sopra il viewport, lo scroll viene compensato: niente salti.
+   */
+  pin?: boolean;
   modulo?: Modulo;
   osservatore?: IntersectionObserver;
 }
@@ -199,8 +204,19 @@ async function attiva(r: Registrazione, gen: number) {
   const modulo = await r.carica();
   if (gen !== generazione || r.modulo) return;
   r.modulo = modulo;
+  const el = r.pin && r.el ? document.querySelector<HTMLElement>(r.el) : null;
+  const sopra = el ? el.getBoundingClientRect().top < 0 : false;
+  const altezzaPrima = document.documentElement.scrollHeight;
   try {
     await modulo.init(c);
+    if (sopra && !ridotto) {
+      c.ScrollTrigger.refresh();
+      const delta = document.documentElement.scrollHeight - altezzaPrima;
+      if (delta) {
+        window.scrollBy(0, delta);
+        c.lenis?.scrollTo(window.scrollY, { immediate: true, force: true });
+      }
+    }
   } catch (err) {
     console.error(`[motion] errore in ${r.nome}`, err);
     html.classList.add('motion-ko');
@@ -257,10 +273,31 @@ async function accendi() {
     }
   }
   if (ctx && !ridotto) {
+    osservaDimensioni();
     document.fonts?.ready.then(refresh);
     if (document.readyState !== 'complete')
       window.addEventListener('load', refresh, { once: true });
   }
+}
+
+/**
+ * Le sezioni con content-visibility: auto cambiano altezza quando vengono
+ * disegnate la prima volta: le posizioni dei ScrollTrigger vanno ricalcolate.
+ */
+let ro: ResizeObserver | null = null;
+function osservaDimensioni() {
+  if (ro || typeof ResizeObserver === 'undefined') return;
+  const altezze = new WeakMap<Element, number>();
+  ro = new ResizeObserver((voci) => {
+    let cambiato = false;
+    for (const v of voci) {
+      const h = Math.round(v.contentRect.height);
+      if (altezze.has(v.target) && altezze.get(v.target) !== h) cambiato = true;
+      altezze.set(v.target, h);
+    }
+    if (cambiato) refresh();
+  });
+  document.querySelectorAll('.cv-auto').forEach((el) => ro!.observe(el));
 }
 
 function spegni() {

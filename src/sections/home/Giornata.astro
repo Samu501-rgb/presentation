@@ -336,6 +336,8 @@ const cifre = capitoli.map((c) => c.ora.replace(':', '').split('').map(Number));
   registra({
     nome: 'giornata',
     carica: () => import('../../scripts/motion/giornata'),
-    quando: 'idle',
+    quando: 'vicino',
+    el: '[data-giornata]',
+    pin: true,
   });
 </script>

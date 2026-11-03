@@ -7,16 +7,18 @@ import { Icon } from 'astro-icon/components';
 import { linkWhatsApp } from '../data/negozio';
 ---
 
-<a
-  href={linkWhatsApp()}
-  class="fab tocco fixed bottom-4 right-4 z-40 grid size-14 place-items-center rounded-full bg-pomodoro-700 text-carta shadow-[0_10px_30px_-10px_rgb(31_26_23/0.6)] md:bottom-6 md:right-6 md:size-16"
-  aria-label="Scrivici su WhatsApp"
-  target="_blank"
-  rel="noopener"
-  data-fab
->
-  <Icon name="lucide:message-circle" class="icona size-7" aria-hidden="true" />
-</a>
+<aside aria-label="Contatto rapido">
+  <a
+    href={linkWhatsApp()}
+    class="fab tocco fixed bottom-4 right-4 z-40 grid size-14 place-items-center rounded-full bg-pomodoro-700 text-carta shadow-[0_10px_30px_-10px_rgb(31_26_23/0.6)] md:bottom-6 md:right-6 md:size-16"
+    aria-label="Scrivici su WhatsApp"
+    target="_blank"
+    rel="noopener"
+    data-fab
+  >
+    <Icon name="lucide:message-circle" class="icona size-7" aria-hidden="true" />
+  </a>
+</aside>
 
 <style>
   .fab {

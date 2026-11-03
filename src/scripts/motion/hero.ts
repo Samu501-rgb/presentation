@@ -53,6 +53,8 @@ export function init(ctx: Contesto) {
     split = SplitText.create(sotto, {
       type: 'lines',
       mask: 'lines',
+      // Solo righe: il testo resta leggibile così com'è (niente aria-label su <p>).
+      aria: 'none',
       autoSplit: true,
       onSplit(self) {
         gsap.set(sotto, { visibility: 'visible' });
@@ -82,28 +84,16 @@ export function init(ctx: Contesto) {
       );
 
     // 5) Scroll: oggetti in profondità a velocità diverse, titolo che scala 1→0.92.
-    oggetti.forEach((o) => {
-      const p = Number(o.dataset.profondita) || 1;
-      gsap.to(o, {
-        yPercent: -60 * p,
-        ease: 'none',
-        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 },
-      });
+    //    Un'unica timeline con un solo ScrollTrigger.
+    const scroll = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 },
     });
-    if (titolo) {
-      gsap.to(titolo, {
-        scale: 0.92,
-        ease: 'none',
-        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 },
-      });
-    }
-    if (giro) {
-      gsap.to(giro, {
-        rotation: 200,
-        ease: 'none',
-        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 },
-      });
-    }
+    oggetti.forEach((o) =>
+      scroll.to(o, { yPercent: -60 * (Number(o.dataset.profondita) || 1) }, 0),
+    );
+    if (titolo) scroll.to(titolo, { scale: 0.92 }, 0);
+    if (giro) scroll.to(giro, { rotation: 200 }, 0);
 
     // 6) Parallax leggero al mouse (±12px), solo con pointer fine.
     if (!mouse) return;

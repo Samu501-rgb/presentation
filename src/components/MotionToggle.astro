@@ -14,12 +14,11 @@ const { class: classe, compatto = false } = Astro.props;
 <button
   type="button"
   class:list={[
-    'interruttore tocco inline-flex items-center gap-2 rounded-full text-sm font-semibold',
+    'interruttore solo-js tocco inline-flex items-center gap-2 rounded-full text-sm font-semibold',
     classe,
   ]}
   data-motion-toggle
   aria-pressed="true"
-  hidden
 >
   <span class:list={[compatto && 'visualmente-nascosto']}>Animazioni</span>
   <span

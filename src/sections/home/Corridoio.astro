@@ -31,7 +31,7 @@ const tinte = ['rosso', 'giallo', 'azzurro', 'verde'];
       >
         Dalla cucina alla ferramenta, tutto in un posto solo. Entra nel reparto che ti serve.
       </SectionHeading>
-      <div class="flex items-center gap-2" data-corridoio-frecce hidden>
+      <div class="solo-js flex items-center gap-2" data-corridoio-frecce>
         <button
           type="button"
           class="tocco grid size-12 place-items-center rounded-full border-2 border-inchiostro"
@@ -78,16 +78,19 @@ const tinte = ['rosso', 'giallo', 'azzurro', 'verde'];
                     />
                   ) : (
                     <>
-                      <span
+                      <svg
                         class:list={[
-                          'corridoio__numero tabular',
+                          'corridoio__numero',
                           stile.scuro ? 'text-carta/25' : 'text-inchiostro/15',
                         ]}
+                        viewBox="0 0 220 130"
                         aria-hidden="true"
                         data-numero
                       >
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
+                        <text x="216" y="112" text-anchor="end">
+                          {String(i + 1).padStart(2, '0')}
+                        </text>
+                      </svg>
                       <div class="corridoio__oggetti" aria-hidden="true" data-parallasse>
                         {r.data.oggetti.slice(0, 3).map((o, k) => (
                           <div class:list={['corridoio__oggetto', `corridoio__oggetto--${k}`]}>
@@ -194,14 +197,20 @@ const tinte = ['rosso', 'giallo', 'azzurro', 'verde'];
   .corridoio__visual {
     aspect-ratio: 4 / 5;
   }
+  /* Numero decorativo in SVG (aria-hidden): non è testo da leggere. */
   .corridoio__numero {
     position: absolute;
-    top: 0.5rem;
-    right: 1.25rem;
+    top: 0.75rem;
+    right: 1rem;
+    width: clamp(8rem, 15vw, 14rem);
+    height: auto;
+    overflow: visible;
+  }
+  .corridoio__numero text {
+    fill: currentColor;
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: clamp(6rem, 12vw, 12rem);
-    line-height: 1;
+    font-size: 150px;
     letter-spacing: -0.06em;
   }
   .corridoio__oggetti {
@@ -292,6 +301,8 @@ const tinte = ['rosso', 'giallo', 'azzurro', 'verde'];
   registra({
     nome: 'corridoio',
     carica: () => import('../../scripts/motion/corridoio'),
-    quando: 'idle',
+    quando: 'vicino',
+    el: '[data-corridoio]',
+    pin: true,
   });
 </script>
